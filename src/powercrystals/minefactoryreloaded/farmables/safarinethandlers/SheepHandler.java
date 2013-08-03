@@ -2,7 +2,7 @@ package powercrystals.minefactoryreloaded.farmables.safarinethandlers;
 
 import java.util.List;
 
-import net.minecraft.block.BlockCloth;
+import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDye;
@@ -21,6 +21,6 @@ public class SheepHandler implements ISafariNetHandler
 	@Override
 	public void addInformation(ItemStack safariNetStack, EntityPlayer player, List infoList, boolean advancedTooltips)
 	{
-		infoList.add("Wool: " + ItemDye.dyeColorNames[BlockCloth.getBlockFromDye((safariNetStack.getTagCompound().getByte("Color")))]);
+		infoList.add("Wool: " + ItemDye.dyeColorNames[BlockColored.getBlockFromDye((safariNetStack.getTagCompound().getByte("Color")))]);
 	}
 }

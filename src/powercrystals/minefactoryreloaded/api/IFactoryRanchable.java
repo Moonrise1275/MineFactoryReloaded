@@ -2,7 +2,7 @@ package powercrystals.minefactoryreloaded.api;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public interface IFactoryRanchable
 {
 	/**
-	 * @return The entity being ranched. Must be a subtype of EntityLiving.
+	 * @return The entity being ranched. Must be a subtype of EntityLivingBase.
 	 */
 	public Class<?> getRanchableEntity();
 	
@@ -25,5 +25,5 @@ public interface IFactoryRanchable
 	 * @param rancher The rancher instance doing the ranching. Used to access the Rancher's inventory when milking cows, for example.
 	 * @return A list of drops.
 	 */
-	public List<ItemStack> ranch(World world, EntityLiving entity, IInventory rancher);
+	public List<Object> ranch(World world, EntityLivingBase entity, IInventory rancher);
 }

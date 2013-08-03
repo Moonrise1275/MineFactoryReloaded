@@ -53,7 +53,7 @@ public class ItemMulti extends ItemFactory
 	{
 		for(int i = 0; i < _icons.length; i++)
 		{
-			_icons[i] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + "." + _names[i]);
+			_icons[i] = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + "." + _names[i]);
 		}
 	}
 	

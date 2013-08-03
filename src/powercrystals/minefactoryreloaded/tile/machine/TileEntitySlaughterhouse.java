@@ -3,9 +3,9 @@ package powercrystals.minefactoryreloaded.tile.machine;
 import java.util.List;
 
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import powercrystals.minefactoryreloaded.MFRRegistry;
 import powercrystals.minefactoryreloaded.core.GrindingDamage;
@@ -23,7 +23,7 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 	public void setWorldObj(World world)
 	{
 		super.setWorldObj(world);
-		this._grindingWorld.setAllowSpawns(true);
+		//this._grindingWorld.setAllowSpawns(true);
 	}
 	
 	@Override
@@ -35,12 +35,12 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 	@Override
 	public boolean activateMachine()
 	{
-		_grindingWorld.cleanReferences();
-		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLiving.class, _areaManager.getHarvestArea().toAxisAlignedBB());
+		//_grindingWorld.cleanReferences();
+		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _areaManager.getHarvestArea().toAxisAlignedBB());
 		
 		entityList: for(Object o : entities)
 		{
-			EntityLiving e = (EntityLiving)o;
+			EntityLivingBase e = (EntityLivingBase)o;
 			for(Class<?> t : MFRRegistry.getSlaughterhouseBlacklist())
 			{
 				if(t.isInstance(e))
@@ -48,16 +48,16 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 					continue entityList;
 				}
 			}
-			if((e instanceof EntityAgeable && ((EntityAgeable)e).getGrowingAge() < 0) || e.isEntityInvulnerable() || e.getHealth() <= 0
-					|| !_grindingWorld.addEntityForGrinding(e))
+			if((e instanceof EntityAgeable && ((EntityAgeable)e).getGrowingAge() < 0) || e.isEntityInvulnerable() || e.func_110143_aJ() <= 0)
+					//|| !_grindingWorld.addEntityForGrinding(e))
 			{
 				continue;
 			}
 			double massFound = Math.pow(e.boundingBox.getAverageEdgeLength(), 2);
 			damageEntity(e);
-			if(e.getHealth() <= 0)
+			if(e.func_110143_aJ() <= 0)
 			{
-				_tank.fill(LiquidDictionary.getLiquid(_rand.nextInt(8) == 0 ? "pinkslime" : "meat", (int)(100 * massFound)), true);
+				_tank.fill(FluidRegistry.getFluidStack(_rand.nextInt(8) == 0 ? "pinkslime" : "meat", (int)(100 * massFound)), true);
 				setIdleTicks(10);
 			}
 			else
@@ -71,7 +71,7 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 	}
 	
 	@Override
-	protected void damageEntity(EntityLiving entity)
+	protected void damageEntity(EntityLivingBase entity)
 	{
 		setRecentlyHit(entity, 0);
 		entity.attackEntityFrom(_damageSource, DAMAGE);

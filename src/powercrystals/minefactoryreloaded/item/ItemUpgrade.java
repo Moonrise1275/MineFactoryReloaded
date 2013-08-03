@@ -49,7 +49,7 @@ public class ItemUpgrade extends ItemFactory
 	{
 		for(int i = 0; i < _upgradeIcons.length; i++)
 		{
-			_upgradeIcons[i] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + "." + _upgradeNames[i]);
+			_upgradeIcons[i] = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + "." + _upgradeNames[i]);
 		}
 	}
 	

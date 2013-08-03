@@ -3,24 +3,25 @@ package powercrystals.minefactoryreloaded.tile.base;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import powercrystals.core.position.BlockPosition;
-import powercrystals.core.power.PowerProviderAdvanced;
+//import powercrystals.core.power.PowerProviderAdvanced;
 import powercrystals.minefactoryreloaded.setup.Machine;
-import buildcraft.api.power.IPowerProvider;
-import buildcraft.api.power.IPowerReceptor;
+//import buildcraft.api.power.IPowerProvider;
+//import buildcraft.api.power.IPowerReceptor;
 
-public abstract class TileEntityGenerator extends TileEntityFactoryInventory implements IPowerReceptor
+public abstract class TileEntityGenerator extends TileEntityFactoryInventory //implements IPowerReceptor
 {
-	private IPowerProvider _powerProvider;
+	//private IPowerProvider _powerProvider;
 	
 	protected TileEntityGenerator(Machine machine)
 	{
 		super(machine);
-		_powerProvider = new PowerProviderAdvanced();
-		_powerProvider.configure(0, 0, 0, 0, 0);
+		//_powerProvider = new PowerProviderAdvanced();
+		//_powerProvider.configure(0, 0, 0, 0, 0);
 	}
 	
 	protected final int producePower(int mj)
 	{
+		/*
 		BlockPosition ourbp = BlockPosition.fromFactoryTile(this);
 		
 		for(BlockPosition bp : ourbp.getAdjacent(true))
@@ -45,10 +46,10 @@ public abstract class TileEntityGenerator extends TileEntityFactoryInventory imp
 				}
 			}
 		}
-		
+		*/
 		return mj;
 	}
-	
+	/*
 	@Override
 	public void setPowerProvider(IPowerProvider provider)
 	{
@@ -71,4 +72,5 @@ public abstract class TileEntityGenerator extends TileEntityFactoryInventory imp
 	{
 		return 0;
 	}
+	*/
 }

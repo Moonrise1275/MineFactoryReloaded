@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -34,6 +35,8 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiRedNetLogic extends GuiScreenBase
 {
+	private static final ResourceLocation REDNETLOGIC = MineFactoryReloadedCore.getGuiTexture("rednetlogic.png");
+	
 	private class CircuitComparator implements Comparator<IRedNetLogicCircuit>
 	{
 		@Override
@@ -67,7 +70,7 @@ public class GuiRedNetLogic extends GuiScreenBase
 	
 	public GuiRedNetLogic(Container container, TileEntityRedNetLogic logic)
 	{	
-		super(container, MineFactoryReloadedCore.guiFolder + "rednetlogic.png");
+		super(container, REDNETLOGIC);
 		xSize = 384;
 		ySize = 256;
 		
@@ -321,7 +324,7 @@ public class GuiRedNetLogic extends GuiScreenBase
 		mouseX -= guiLeft;
 		mouseY -= guiTop;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.renderEngine.bindTexture(_backgroundTexture);
+		mc.renderEngine.func_110577_a(_backgroundTexture);
 		drawLargeTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
 		GL11.glPushMatrix();

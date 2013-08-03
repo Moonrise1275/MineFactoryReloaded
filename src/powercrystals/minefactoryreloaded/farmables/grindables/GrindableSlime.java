@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -54,14 +54,14 @@ public class GrindableSlime implements IFactoryGrindable2
 	}
 
 	@Override
-	public List<MobDrop> grind(World world, EntityLiving entity, Random random) {
+	public List<MobDrop> grind(World world, EntityLivingBase entity, Random random) {
 		if (((EntitySlime)entity).getSlimeSize() > dropSize)
 			return drops;
 		return null;
 	}
 
 	@Override
-	public boolean processEntity(EntityLiving entity) {
+	public boolean processEntity(EntityLivingBase entity) {
 		return false;
 	}
 

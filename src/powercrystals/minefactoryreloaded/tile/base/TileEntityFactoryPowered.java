@@ -13,16 +13,16 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import powercrystals.core.power.PowerProviderAdvanced;
+//import powercrystals.core.power.PowerProviderAdvanced;
 import powercrystals.core.util.Util;
 import powercrystals.core.util.UtilInventory;
 import powercrystals.minefactoryreloaded.setup.Machine;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IVoltage;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
-import universalelectricity.core.electricity.ElectricityPack;
-import buildcraft.api.power.IPowerProvider;
-import buildcraft.api.power.IPowerReceptor;
+//import universalelectricity.core.block.IConnector;
+//import universalelectricity.core.block.IVoltage;
+//import universalelectricity.core.electricity.ElectricityNetworkHelper;
+//import universalelectricity.core.electricity.ElectricityPack;
+//import buildcraft.api.power.IPowerProvider;
+//import buildcraft.api.power.IPowerReceptor;
 
 /*
  * There are three pieces of information tracked - energy, work, and idle ticks.
@@ -36,7 +36,7 @@ import buildcraft.api.power.IPowerReceptor;
  * progress bar correctly.
  */
 
-public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventory implements IPowerReceptor, IEnergySink, IVoltage, IConnector
+public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventory implements IEnergySink
 {	
 	public static final int energyPerEU = 4;
 	public static final int energyPerMJ = 10;
@@ -59,7 +59,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	
 	// buildcraft-related fields
 	
-	private IPowerProvider _powerProvider;
+	//private IPowerProvider _powerProvider;
 	
 	// IC2-related fields
 	
@@ -68,7 +68,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	
 	// UE-related fields
 	
-	private int _ueBuffer;
+	//private int _ueBuffer;
 	
 	// constructors
 	
@@ -81,20 +81,20 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	{
 		super(machine);
 		_energyActivation = activationCostMJ * energyPerMJ;
-		_powerProvider = new PowerProviderAdvanced();
-		configurePowerProvider();
+		//_powerProvider = new PowerProviderAdvanced();
+		//configurePowerProvider();
 		setIsActive(false);
 	}
 	
 	// local methods
-	
+/*	
 	private void configurePowerProvider()
 	{ // TODO: inline into constructor in 2.8
 		int activation = getMaxEnergyPerTick() / energyPerMJ;
 		int maxReceived = Math.min(activation * 20, 1000);
 		_powerProvider.configure(0, activation < 10 ? 1 : 10, maxReceived, 1, 1000);
 	}
-	
+*/	
 	@Override
 	public void updateEntity()
 	{
@@ -118,7 +118,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 		}
 		
 		int energyRequired = Math.min(getEnergyStoredMax() - getEnergyStored(), getMaxEnergyPerTick());
-		
+		/*
 		if (energyRequired > 0)
 		{
 			IPowerProvider pp = getPowerProvider(); 
@@ -146,7 +146,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 			energyRequired -= energyFromUE;
 			_ueBuffer -= (energyFromUE * wPerEnergy);
 		}
-		
+		*/
 		_energyRequiredThisTick = energyRequired;
 		
 		setIsActive(_energyStored >= _energyActivation * 2);
@@ -258,7 +258,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 			}
 			_isAddedToIC2EnergyNet = false;
 		}
-		ElectricityNetworkHelper.invalidate(this);
+		//ElectricityNetworkHelper.invalidate(this);
 		super.invalidate();
 	}
 	
@@ -323,10 +323,10 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 		
 		tag.setInteger("energyStored", _energyStored);
 		tag.setInteger("workDone", _workDone);
-		tag.setInteger("ueBuffer", _ueBuffer);
-		NBTTagCompound pp = new NBTTagCompound();
-		_powerProvider.writeToNBT(pp);
-		tag.setCompoundTag("powerProvider", pp);
+		//tag.setInteger("ueBuffer", _ueBuffer);
+		//NBTTagCompound pp = new NBTTagCompound();
+		//_powerProvider.writeToNBT(pp);
+		//tag.setCompoundTag("powerProvider", pp);
 		
 		if (failedDrops != null)
 		{
@@ -348,7 +348,8 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 		
 		_energyStored = Math.min(tag.getInteger("energyStored"), getEnergyStoredMax());
 		_workDone = Math.min(tag.getInteger("workDone"), getWorkMax());
-		_ueBuffer = tag.getInteger("ueBuffer");
+		//_ueBuffer = tag.getInteger("ueBuffer");
+		/*
 		if (tag.hasKey("powerProvider"))
 		{
 			_powerProvider.readFromNBT(tag.getCompoundTag("powerProvider"));
@@ -364,7 +365,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 			tag.removeTag("minActivationEnergy");
 			tag.removeTag("storedEnergy");
 		}
-
+		*/
 		if (tag.hasKey("DropItems"))
 		{
 			List<ItemStack> drops = new ArrayList<ItemStack>();
@@ -391,7 +392,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	}
 	
 	// BC methods
-	
+	/*
 	@Override
 	public void setPowerProvider(IPowerProvider provider)
 	{
@@ -415,7 +416,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	public final void doWork()
 	{
 	}
-	
+	*/
 	// IC2 methods
 	
 	@Override
@@ -453,7 +454,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	}
 	
 	// UE Methods
-	
+	/*
 	@Override
 	public double getVoltage()
 	{
@@ -465,4 +466,5 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	{
 		return true;
 	}
+	*/
 }

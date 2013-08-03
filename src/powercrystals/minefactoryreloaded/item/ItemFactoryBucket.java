@@ -2,6 +2,7 @@ package powercrystals.minefactoryreloaded.item;
 
 import java.util.List;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBucket;
@@ -13,26 +14,26 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFactoryBucket extends ItemBucket
 {
-	private int _liquidId;
+	private int _fluidBlockID;
 	
-	public ItemFactoryBucket(int id, int liquidId)
+	public ItemFactoryBucket(int id, int fluidBlockID)
 	{
-		super(id, liquidId);
+		super(id, fluidBlockID);
 		setCreativeTab(MFRCreativeTab.tab);
-		_liquidId = liquidId;
+		_fluidBlockID = fluidBlockID;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
+		this.itemIcon = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
 	}
 	
 	@Override
-	public boolean tryPlaceContainedLiquid(World world, double xOffset, double yOffset, double zOffset, int x, int y, int z)
+	public boolean tryPlaceContainedLiquid(World world, int x, int y, int z)
 	{
-		if(_liquidId <= 0)
+		if(_fluidBlockID <= 0)
 		{
 			return false;
 		}
@@ -42,7 +43,12 @@ public class ItemFactoryBucket extends ItemBucket
 		}
 		else
 		{
-			world.setBlock(x, y, z, _liquidId, 7, 3);
+			Material material = world.getBlockMaterial(x, y, z);
+			if (!world.isRemote && !material.isSolid() && !material.isLiquid())
+			{
+				world.destroyBlock(x, y, z, true);
+			}
+			world.setBlock(x, y, z, _fluidBlockID, 0, 3);
 			return true;
 		}
 	}

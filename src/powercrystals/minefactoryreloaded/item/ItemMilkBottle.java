@@ -15,7 +15,7 @@ public class ItemMilkBottle extends ItemFactory
 	
 	@Override
 	public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
-    {
+	{
 		if(!world.isRemote)
 		{
 			player.curePotionEffects(new ItemStack(Item.bucketMilk));

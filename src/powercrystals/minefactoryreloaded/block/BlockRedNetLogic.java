@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +42,7 @@ public class BlockRedNetLogic extends BlockContainer implements IConnectableRedN
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entity, ItemStack stack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
 	{
 		if(entity == null)
 		{
@@ -217,7 +217,7 @@ public class BlockRedNetLogic extends BlockContainer implements IConnectableRedN
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		blockIcon = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
+		blockIcon = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
 	}
 	
 	@Override

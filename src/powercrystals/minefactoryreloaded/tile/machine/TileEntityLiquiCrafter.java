@@ -11,10 +11,11 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import powercrystals.core.util.Util;
 import powercrystals.minefactoryreloaded.core.ITankContainerBucketable;
 import powercrystals.minefactoryreloaded.core.RemoteInventoryCrafting;
@@ -34,27 +35,29 @@ public class TileEntityLiquiCrafter extends TileEntityFactoryInventory implement
 	
 	private class ItemResourceTracker
 	{
-		public ItemResourceTracker(int id, int meta, int required)
+		public ItemResourceTracker(boolean isFluid, int id, int meta, int required)
 		{
+			this.isFluid = isFluid;
 			this.id = id;
 			this.meta = meta;
 			this.required = required;
 		}
 		
+		public boolean isFluid;
 		public int id;
 		public int meta;
 		public int required;
 		public int found;
 	}
 	
-	private LiquidTank[] _tanks = new LiquidTank[9];
+	private FluidTank[] _tanks = new FluidTank[9];
 	
 	public TileEntityLiquiCrafter()
 	{
 		super(Machine.LiquiCrafter);
 		for(int i = 0; i < 9; i++)
 		{
-			_tanks[i] = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 10);
+			_tanks[i] = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
 		}
 	}
 	
@@ -114,30 +117,30 @@ inv:	for(int i = 0; i < 9; i++)
 		{
 			if(_inventory[i] != null)
 			{
-				if(LiquidContainerRegistry.isFilledContainer(_inventory[i]))
+				if(FluidContainerRegistry.isFilledContainer(_inventory[i]))
 				{
-					LiquidStack l = LiquidContainerRegistry.getLiquidForFilledItem(_inventory[i]);
+					FluidStack l = FluidContainerRegistry.getFluidForFilledItem(_inventory[i]);
 					for(ItemResourceTracker t : requiredItems)
 					{
-						if(t.id == l.itemID && t.meta == l.itemMeta)
+						if(t.isFluid && t.id == l.fluidID)
 						{
-							t.required += 1000;
+							t.required += l.amount;
 							continue inv;
 						}
 					}
-					requiredItems.add(new ItemResourceTracker(l.itemID, l.itemMeta, 1000));
+					requiredItems.add(new ItemResourceTracker(true, l.fluidID, 0, l.amount));
 				}
 				else
 				{
 					for(ItemResourceTracker t : requiredItems)
 					{
-						if(t.id == _inventory[i].itemID && t.meta == _inventory[i].getItemDamage())
+						if(!t.isFluid && t.id == _inventory[i].itemID && t.meta == _inventory[i].getItemDamage())
 						{
 							t.required++;
 							continue inv;
 						}
 					}
-					requiredItems.add(new ItemResourceTracker(_inventory[i].itemID, _inventory[i].getItemDamage(), 1));
+					requiredItems.add(new ItemResourceTracker(false, _inventory[i].itemID, _inventory[i].getItemDamage(), 1));
 				}
 			}
 		}
@@ -148,7 +151,7 @@ inv:	for(int i = 0; i < 9; i++)
 			{
 				for(ItemResourceTracker t : requiredItems)
 				{
-					if(t.id == _inventory[i].itemID && (t.meta == _inventory[i].getItemDamage() || _inventory[i].getItem().isDamageable()))
+					if(!t.isFluid && t.id == _inventory[i].itemID && (t.meta == _inventory[i].getItemDamage() || _inventory[i].getItem().isDamageable()))
 					{
 						if(!_inventory[i].getItem().hasContainerItem())
 						{
@@ -165,14 +168,14 @@ inv:	for(int i = 0; i < 9; i++)
 		}
 		for(int i = 0; i < _tanks.length; i++)
 		{
-			LiquidStack l = _tanks[i].getLiquid();
+			FluidStack l = _tanks[i].getFluid();
 			if(l == null || l.amount == 0)
 			{
 				continue;
 			}
 			for(ItemResourceTracker t : requiredItems)
 			{
-				if(t.id == l.itemID && t.meta == l.itemMeta)
+				if(t.isFluid && t.id == l.fluidID)
 				{
 					t.found += l.amount;
 					break;
@@ -195,7 +198,7 @@ inv:	for(int i = 0; i < 9; i++)
 			{
 				for(ItemResourceTracker t : requiredItems)
 				{
-					if(t.id == _inventory[i].itemID && (t.meta == _inventory[i].getItemDamage() || _inventory[i].getItem().isDamageable()))
+					if(!t.isFluid && t.id == _inventory[i].itemID && (t.meta == _inventory[i].getItemDamage() || _inventory[i].getItem().isDamageable()))
 					{
 						int use;
 						if(_inventory[i].getItem().hasContainerItem())
@@ -234,14 +237,14 @@ inv:	for(int i = 0; i < 9; i++)
 		}
 		for(int i = 0; i < _tanks.length; i++)
 		{
-			LiquidStack l = _tanks[i].getLiquid();
+			FluidStack l = _tanks[i].getFluid();
 			if(l == null || l.amount == 0)
 			{
 				continue;
 			}
 			for(ItemResourceTracker t : requiredItems)
 			{
-				if(t.id == l.itemID && t.meta == l.itemMeta)
+				if(t.isFluid && t.id == l.fluidID)
 				{
 					int use = Math.min(t.required, l.amount);
 					_tanks[i].drain(use, true);
@@ -349,13 +352,7 @@ inv:	for(int i = 0; i < 9; i++)
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
-	{
-		return this.fill(0, resource, doFill);
-	}
-	
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		int quantity;
 		int match = findFirstMatchingTank(resource);
@@ -374,6 +371,33 @@ inv:	for(int i = 0; i < 9; i++)
 		}
 		return 0;
 	}
+	/*
+	@Override
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
+	{
+		int quantity;
+		int match = findFirstMatchingTank(resource);
+		if(match >= 0)
+		{
+			quantity = _tanks[match].fill(resource, doFill);
+			if(quantity > 0) _resourcesChangedSinceLastFailedCraft = true;
+			return quantity;
+		}
+		match = findFirstEmptyTank();
+		if(match >= 0)
+		{
+			quantity = _tanks[match].fill(resource, doFill);
+			if(quantity > 0) _resourcesChangedSinceLastFailedCraft = true;
+			return quantity;
+		}
+		return 0;
+	}
+	*/
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return true;
+	}
 	
 	@Override
 	public boolean allowBucketDrain()
@@ -382,27 +406,46 @@ inv:	for(int i = 0; i < 9; i++)
 	}
 	
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
+	{
+		int match = findFirstMatchingTank(fluid);
+		if(match >= 0) return _tanks[match].drain(fluid.amount, doDrain);
+		return null;
+	}
+	
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		int match = findFirstNonEmptyTank();
 		if(match >= 0) return _tanks[match].drain(maxDrain, doDrain);
 		return null;
 	}
-	
+	/*
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
 		return _tanks[tankIndex].drain(maxDrain, doDrain);
 	}
-	
+	*/
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return _tanks;
+		return true;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		FluidTankInfo[] tankinfo = new FluidTankInfo[9];
+		for (int i = 0; i < 9; i++)
+		{
+			tankinfo[i] = _tanks[i].getInfo();
+		}
+		return tankinfo;
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		int match = findFirstMatchingTank(type);
 		if(match >= 0) return _tanks[match];
@@ -410,12 +453,19 @@ inv:	for(int i = 0; i < 9; i++)
 		if(match >= 0) return _tanks[match];
 		return null;
 	}
+	*/
+	public FluidTank getTank(int tankIndex)
+	{
+		if (tankIndex >= 0 && tankIndex < 9)
+			return _tanks[tankIndex];
+		return null;
+	}
 	
 	private int findFirstEmptyTank()
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			if(_tanks[i].getLiquid() == null || _tanks[i].getLiquid().amount == 0)
+			if(_tanks[i].getFluid() == null || _tanks[i].getFluid().amount == 0)
 			{
 				return i;
 			}
@@ -428,7 +478,7 @@ inv:	for(int i = 0; i < 9; i++)
 	{
 		for(int i = 0; i < 9; i++)
 		{
-			if(_tanks[i].getLiquid() != null && _tanks[i].getLiquid().amount > 0)
+			if(_tanks[i].getFluid() != null && _tanks[i].getFluid().amount > 0)
 			{
 				return i;
 			}
@@ -437,16 +487,16 @@ inv:	for(int i = 0; i < 9; i++)
 		return -1;
 	}
 	
-	private int findFirstMatchingTank(LiquidStack liquid)
+	private int findFirstMatchingTank(FluidStack fluid)
 	{
-		if(liquid == null)
+		if(fluid == null)
 		{
 			return -1;
 		}
 		
 		for(int i = 0; i < 9; i++)
 		{
-			if(_tanks[i].getLiquid() != null && _tanks[i].getLiquid().itemID == liquid.itemID && _tanks[i].getLiquid().itemMeta == liquid.itemMeta)
+			if(_tanks[i].getFluid() != null && _tanks[i].getFluid().fluidID == fluid.fluidID)
 			{
 				return i;
 			}
@@ -478,10 +528,10 @@ inv:	for(int i = 0; i < 9; i++)
 			int j = nbttagcompound1.getByte("Tank") & 0xff;
 			if(j >= 0 && j < _tanks.length)
 			{
-				LiquidStack l = LiquidStack.loadLiquidStackFromNBT(nbttagcompound1);
-				if(l != null && l.asItemStack().getItem() != null && LiquidContainerRegistry.isLiquid(l.asItemStack()))
+				FluidStack l = FluidStack.loadFluidStackFromNBT(nbttagcompound1);
+				if(l != null && l.getFluid() != null)
 				{
-					_tanks[j].setLiquid(l);
+					_tanks[j].setFluid(l);
 				}
 			}
 		}
@@ -495,12 +545,12 @@ inv:	for(int i = 0; i < 9; i++)
 		NBTTagList tanks = new NBTTagList();
 		for(int i = 0; i < _tanks.length; i++)
 		{
-			if(_tanks[i].getLiquid() != null)
+			if(_tanks[i].getFluid() != null)
 			{
 				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
 				nbttagcompound1.setByte("Tank", (byte)i);
 				
-				LiquidStack l = _tanks[i].getLiquid();
+				FluidStack l = _tanks[i].getFluid();
 				l.writeToNBT(nbttagcompound1);
 				tanks.appendTag(nbttagcompound1);
 			}

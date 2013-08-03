@@ -1300,7 +1300,7 @@ public class Vanilla
 			"LGL",
 			"IRI",
 			'P', "sheetPlastic",
-			'L', Item.lightStoneDust,
+			'L', Item.glowstone,
 			'G', Item.gunpowder,
 			'I', Item.ingotIron,
 			'R', Item.redstone,

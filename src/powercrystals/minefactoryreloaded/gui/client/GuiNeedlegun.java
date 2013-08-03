@@ -5,10 +5,13 @@ import org.lwjgl.opengl.GL11;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 public class GuiNeedlegun extends GuiContainer
 {
+	private static final ResourceLocation NEEDLEGUN = MineFactoryReloadedCore.getGuiTexture("needlegun.png");
+	
 	public GuiNeedlegun(Container container)
 	{
 		super(container);
@@ -27,7 +30,7 @@ public class GuiNeedlegun extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float gameTicks, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(MineFactoryReloadedCore.guiFolder + "needlegun.png");
+		this.mc.renderEngine.func_110577_a(NEEDLEGUN);
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);

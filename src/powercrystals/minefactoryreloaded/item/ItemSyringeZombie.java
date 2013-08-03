@@ -2,7 +2,7 @@ package powercrystals.minefactoryreloaded.item;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityPig;
@@ -18,13 +18,13 @@ public class ItemSyringeZombie extends ItemSyringe
 	}
 	
 	@Override
-	public boolean canInject(World world, EntityLiving entity, ItemStack syringe)
+	public boolean canInject(World world, EntityLivingBase entity, ItemStack syringe)
 	{
 		return entity instanceof EntityAgeable && ((EntityAgeable)entity).getGrowingAge() < 0;
 	}
 	
 	@Override
-	public boolean inject(World world, EntityLiving entity, ItemStack syringe)
+	public boolean inject(World world, EntityLivingBase entity, ItemStack syringe)
 	{
 		if(world.rand.nextInt(100) < 5)
 		{

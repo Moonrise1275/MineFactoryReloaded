@@ -1,8 +1,8 @@
 package powercrystals.minefactoryreloaded.tile.machine;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import powercrystals.minefactoryreloaded.gui.client.GuiBioFuelGenerator;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryInventory;
 import powercrystals.minefactoryreloaded.gui.container.ContainerBioFuelGenerator;
@@ -23,9 +23,9 @@ public class TileEntityBioFuelGenerator extends TileEntityLiquidGenerator
 	}
 	
 	@Override
-	protected LiquidStack getLiquidType()
+	protected FluidStack getFluidType()
 	{
-		return LiquidDictionary.getLiquid("biofuel", 1);
+		return FluidRegistry.getFluidStack("biofuel", 1);
 	}
 	
 	@Override

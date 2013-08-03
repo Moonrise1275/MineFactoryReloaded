@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetLogic;
 import cpw.mods.fml.relauncher.Side;
@@ -46,19 +47,19 @@ public class ItemRedNetMemoryCard extends ItemFactory
 				NBTTagCompound tag = new NBTTagCompound();
 				te.writeToNBT(tag);
 				itemstack.setTagCompound(tag);
-				player.sendChatToPlayer("PRC program uploaded to memory card from PRC");
+				player.sendChatToPlayer(ChatMessageComponent.func_111066_d("PRC program uploaded to memory card from PRC"));
 			}
 			else
 			{
 				int circuitCount = itemstack.getTagCompound().getTagList("circuits").tagCount();
 				if(circuitCount > ((TileEntityRedNetLogic)te).getCircuitCount())
 				{
-					player.sendChatToPlayer("PRC contains insufficient circuits to hold this program");
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d("PRC contains insufficient circuits to hold this program"));
 				}
 				else
 				{
 					((TileEntityRedNetLogic)te).readCircuitsOnly(itemstack.getTagCompound());
-					player.sendChatToPlayer("PRC program downloaded from memory card to PRC");
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d("PRC program downloaded from memory card to PRC"));
 				}
 			}
 			
@@ -69,7 +70,7 @@ public class ItemRedNetMemoryCard extends ItemFactory
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack)
+	public boolean hasEffect(ItemStack stack, int pass)
 	{
 		return stack.getTagCompound() != null;
 	}

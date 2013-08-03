@@ -10,16 +10,19 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 
 public class RedNetHistorianRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler
 {
+	private static final ResourceLocation HISTORIAN = MineFactoryReloadedCore.getTileEntityTexture("historian.png");
+	
 	private RedNetHistorianModel _model;
 	private static final double _renderMin = 1.0/16.0;
 	private static final double _renderMax = 15.0/16.0;
@@ -32,12 +35,12 @@ public class RedNetHistorianRenderer extends TileEntitySpecialRenderer implement
 	@Override
 	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTicks)
 	{
-		RenderEngine renderengine = Minecraft.getMinecraft().renderEngine;
+		TextureManager renderengine = Minecraft.getMinecraft().renderEngine;
 		TileEntityRedNetHistorian historian = (TileEntityRedNetHistorian)tileentity;
 		
 		if(renderengine != null)
 		{
-			renderengine.bindTexture(MineFactoryReloadedCore.tileEntityFolder + "historian.png");
+			renderengine.func_110577_a(HISTORIAN);
 		}
 		
 		GL11.glPushMatrix();
@@ -138,7 +141,7 @@ public class RedNetHistorianRenderer extends TileEntitySpecialRenderer implement
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "historian.png");
+		func_110628_a(HISTORIAN);
 		
 		GL11.glPushMatrix();
 		GL11.glTranslated(0.12, 0, 0);

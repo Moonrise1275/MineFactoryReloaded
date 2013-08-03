@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetLogic;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetCable;
@@ -37,18 +38,18 @@ public class ItemRedNetMeter extends ItemFactory
 				
 				if(value != 0)
 				{
-					player.sendChatToPlayer(_colorNames[i] + ": " + value);
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d(_colorNames[i] + ": " + value));
 					foundNonZero = true;
 				}
 			}
 			
 			if(!foundNonZero)
 			{
-				player.sendChatToPlayer("All RedNet subnets are 0");
+				player.sendChatToPlayer(ChatMessageComponent.func_111066_d("All RedNet subnets are 0"));
 			}
 			else
 			{
-				player.sendChatToPlayer("All other RedNet subnets are 0");
+				player.sendChatToPlayer(ChatMessageComponent.func_111066_d("All other RedNet subnets are 0"));
 			}
 			
 			return true;
@@ -63,25 +64,25 @@ public class ItemRedNetMeter extends ItemFactory
 				
 				if(value != 0)
 				{
-					player.sendChatToPlayer("Variable " + i +  ": " + value);
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d("Variable " + i +  ": " + value));
 					foundNonZero = true;
 				}
 			}
 			
 			if(!foundNonZero)
 			{
-				player.sendChatToPlayer("All variables are 0");
+				player.sendChatToPlayer(ChatMessageComponent.func_111066_d("All variables are 0"));
 			}
 			else
 			{
-				player.sendChatToPlayer("All other variables are 0");
+				player.sendChatToPlayer(ChatMessageComponent.func_111066_d("All other variables are 0"));
 			}
 			
 			return true;
 		}
 		else if(world.getBlockId(x, y, z) == Block.redstoneWire.blockID)
 		{
-			player.sendChatToPlayer("Dust: " + world.getBlockMetadata(x, y, z));
+			player.sendChatToPlayer(ChatMessageComponent.func_111066_d("Dust: " + world.getBlockMetadata(x, y, z)));
 		}
 		return false;
 	}

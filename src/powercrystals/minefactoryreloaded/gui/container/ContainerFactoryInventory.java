@@ -6,8 +6,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryInventory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,7 +17,6 @@ public class ContainerFactoryInventory extends Container
 	protected TileEntityFactoryInventory _te;
 	
 	private int _tankAmount;
-	private int _tankId;
 	
 	public ContainerFactoryInventory(TileEntityFactoryInventory tileentity, InventoryPlayer inv)
 	{
@@ -49,17 +48,15 @@ public class ContainerFactoryInventory extends Container
 		
 		for(int i = 0; i < crafters.size(); i++)
 		{
-			if(_te.getTank() != null && _te.getTank().getLiquid() != null)
+			if(_te.getTank() != null && _te.getTank().getFluid() != null)
 			{
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 3, _te.getTank().getLiquid().amount);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 4, _te.getTank().getLiquid().itemID);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 5, _te.getTank().getLiquid().itemMeta);
+				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 3, _te.getTank().getFluid().amount);
+				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 4, _te.getTank().getFluid().fluidID);
 			}
 			else if(_te.getTank() != null)
 			{
 				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 3, 0);
 				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 4, 0);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 5, 0);
 			}
 		}
 	}
@@ -71,8 +68,7 @@ public class ContainerFactoryInventory extends Container
 		super.updateProgressBar(var, value);
 		
 		if(var == 3) _tankAmount = value;
-		else if(var == 4) _tankId = value;
-		else if(var == 5) ((LiquidTank)_te.getTank()).setLiquid(new LiquidStack(_tankId, _tankAmount, value));
+		else if(var == 4) _te.getTank().setFluid(new FluidStack(value, _tankAmount));
 	}
 	
 	@Override

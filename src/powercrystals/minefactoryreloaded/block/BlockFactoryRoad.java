@@ -40,9 +40,9 @@ public class BlockFactoryRoad extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		_iconRoad = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
-		_iconRoadOff = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".light.off");
-		_iconRoadOn = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".light.on");
+		_iconRoad = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
+		_iconRoadOff = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".light.off");
+		_iconRoadOn = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".light.on");
 	}
 	
 	@Override

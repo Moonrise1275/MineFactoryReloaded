@@ -2,6 +2,7 @@ package powercrystals.minefactoryreloaded.tile.machine;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fluids.FluidRegistry;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryInventory;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryPowered;
 import powercrystals.minefactoryreloaded.gui.container.ContainerFactoryPowered;
@@ -14,7 +15,7 @@ public class TileEntityLavaFabricator extends TileEntityLiquidFabricator
 {
 	public TileEntityLavaFabricator()
 	{
-		super(Block.lavaStill.blockID, 20, Machine.LavaFabricator);
+		super(FluidRegistry.LAVA, 20, Machine.LavaFabricator);
 	}
 	
 	@Override

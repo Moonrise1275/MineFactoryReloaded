@@ -24,11 +24,12 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import powercrystals.core.position.BlockPosition;
-import powercrystals.core.render.RenderBlockFluidClassic;
+//import powercrystals.core.render.RenderBlockFluidClassic;
 import powercrystals.minefactoryreloaded.core.IHarvestAreaContainer;
 import powercrystals.minefactoryreloaded.entity.EntityNeedle;
 import powercrystals.minefactoryreloaded.entity.EntityRocket;
 import powercrystals.minefactoryreloaded.item.ItemRocketLauncher;
+import powercrystals.minefactoryreloaded.entity.EntityPinkSlime;
 import powercrystals.minefactoryreloaded.entity.EntitySafariNet;
 import powercrystals.minefactoryreloaded.render.RenderTickHandler;
 import powercrystals.minefactoryreloaded.render.block.ConveyorRenderer;
@@ -38,6 +39,7 @@ import powercrystals.minefactoryreloaded.render.block.VineScaffoldRenderer;
 import powercrystals.minefactoryreloaded.render.entity.EntityNeedleRenderer;
 import powercrystals.minefactoryreloaded.render.entity.EntityRocketRenderer;
 import powercrystals.minefactoryreloaded.render.entity.EntitySafariNetRenderer;
+import powercrystals.minefactoryreloaded.render.entity.RenderPinkSlime;
 import powercrystals.minefactoryreloaded.render.item.FactoryGlassPaneItemRenderer;
 import powercrystals.minefactoryreloaded.render.item.NeedleGunItemRenderer;
 import powercrystals.minefactoryreloaded.render.item.RocketItemRenderer;
@@ -93,8 +95,8 @@ public class MineFactoryReloadedClient implements IScheduledTickHandler
 		RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdConveyor, new ConveyorRenderer());
 		RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdFactoryGlassPane, new FactoryGlassPaneRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntitySafariNet.class, new EntitySafariNetRenderer());
-		RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdFluidClassic, new RenderBlockFluidClassic(
-				MineFactoryReloadedCore.renderIdFluidClassic));
+		//RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdFluidClassic, new RenderBlockFluidClassic(
+		//		MineFactoryReloadedCore.renderIdFluidClassic));
 		RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdVineScaffold, new VineScaffoldRenderer());
 		RenderingRegistry.registerBlockHandler(MineFactoryReloadedCore.renderIdFactoryGlass, new FactoryGlassRenderer());
 		
@@ -127,6 +129,8 @@ public class MineFactoryReloadedClient implements IScheduledTickHandler
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityNeedle.class, new EntityNeedleRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new EntityRocketRenderer());
+		
+		RenderingRegistry.registerEntityRenderingHandler(EntityPinkSlime.class, new RenderPinkSlime());
 		
 		TickRegistry.registerScheduledTickHandler(instance, Side.CLIENT);
 		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);

@@ -39,8 +39,8 @@ public class BlockRubberLeaves extends BlockLeaves implements IConnectableRedNet
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		_iconOpaque = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".opaque");
-		_iconTransparent = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".transparent");
+		_iconOpaque = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".opaque");
+		_iconTransparent = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".transparent");
 	}
 	
 	@Override

@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -220,9 +220,9 @@ public class ServerPacketHandler implements IPacketHandler
 				target = world.getEntityByID((Integer)packetReadout[1]);
 			}
 			
-			if(owner instanceof EntityLiving)
+			if(owner instanceof EntityLivingBase)
 			{
-				EntityRocket r = new EntityRocket(world, ((EntityLiving)owner), target);
+				EntityRocket r = new EntityRocket(world, ((EntityLivingBase)owner), target);
 				world.spawnEntityInWorld(r);
 			}
 		}

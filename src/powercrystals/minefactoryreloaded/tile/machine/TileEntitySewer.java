@@ -4,17 +4,19 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import powercrystals.core.position.Area;
 import powercrystals.core.position.BlockPosition;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
@@ -31,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySewer extends TileEntityFactoryInventory implements ITankContainerBucketable, IHarvestAreaContainer
 {
-	private LiquidTank _tank;
+	private FluidTank _tank;
 	
 	private HarvestAreaManager _areaManager;
 	
@@ -44,7 +46,7 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 	public TileEntitySewer()
 	{
 		super(Machine.Sewer);
-		_tank = new LiquidTank(1 * LiquidContainerRegistry.BUCKET_VOLUME);
+		_tank = new FluidTank(1 * FluidContainerRegistry.BUCKET_VOLUME);
 		_areaManager = new HarvestAreaManager(this, 0, 1, 0);
 		_areaManager.setOverrideDirection(ForgeDirection.UP);
 	}
@@ -69,7 +71,7 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 	}
 	
 	@Override
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return _tank;
 	}
@@ -123,27 +125,27 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 		if(_tick >= 31 && !_jammed)
 		{
 			_tick = 0;
-			List<?> entities = worldObj.getEntitiesWithinAABB(EntityLiving.class, _areaManager.getHarvestArea().toAxisAlignedBB());
+			List<?> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _areaManager.getHarvestArea().toAxisAlignedBB());
 			double massFound = 0;
 			for(Object o : entities)
 			{
 				if(o instanceof EntityAnimal || o instanceof EntityVillager)
 				{
-					massFound += Math.pow(((EntityLiving)o).boundingBox.getAverageEdgeLength(), 2);
+					massFound += Math.pow(((EntityLivingBase)o).boundingBox.getAverageEdgeLength(), 2);
 				}
 				else if(o instanceof EntityPlayer && ((EntityPlayer)o).isSneaking())
 				{
-					massFound += Math.pow(((EntityLiving)o).boundingBox.getAverageEdgeLength(), 2);
+					massFound += Math.pow(((EntityLivingBase)o).boundingBox.getAverageEdgeLength(), 2);
 				}
 			}
 			if (massFound > 0)
 			{
-				_tank.fill(LiquidDictionary.getLiquid("sewage", (int)(25 * massFound)), true);
+				_tank.fill(FluidRegistry.getFluidStack("sewage", (int)(25 * massFound)), true);
 			}
 			// TODO: add a second tank to the sewer for essence
-			else if (_tank.getLiquid() == null || _tank.getLiquid().isLiquidEqual(LiquidDictionary.getLiquid("mobEssence", 1)))
+			else if (_tank.getFluid() == null || _tank.getFluid().isFluidEqual(FluidRegistry.getFluidStack("mobEssence", 1)))
 			{
-				int maxAmount = Math.max(_tank.getCapacity() - (_tank.getLiquid() != null ? _tank.getLiquid().amount : 0), 0);
+				int maxAmount = Math.max(_tank.getCapacity() - _tank.getFluidAmount(), 0);
 				if (maxAmount < 0)
 				{
 					return;
@@ -166,7 +168,7 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 						{
 							found = (int)(found * 66.66666667f);
 							maxAmount -= found;
-							_tank.fill(LiquidDictionary.getLiquid("mobEssence", found), true);
+							_tank.fill(FluidRegistry.getFluidStack("mobEssence", found), true);
 							if (maxAmount <= 0)
 							{
 								break;
@@ -179,15 +181,21 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
-	
+	/*
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
 	{
 		return 0;
+	}
+	*/
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
@@ -197,29 +205,41 @@ public class TileEntitySewer extends TileEntityFactoryInventory implements ITank
 	}
 	
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
 	{
 		return null;
 	}
 	
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
-	
+	/*
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
-		return new ILiquidTank[] { _tank };
+		return null;
+	}
+	*/
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		return new FluidTankInfo[] { _tank.getInfo() };
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		return _tank;
 	}
-	
+	*/
 	@Override
 	public int getSizeInventory()
 	{

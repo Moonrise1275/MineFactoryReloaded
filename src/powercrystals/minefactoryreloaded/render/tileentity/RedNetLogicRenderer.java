@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -16,6 +17,9 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class RedNetLogicRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler
 {
+	private static final ResourceLocation REDCOMP = MineFactoryReloadedCore.getTileEntityTexture("redcomp.png");
+	private static final ResourceLocation CARDS = MineFactoryReloadedCore.getTileEntityTexture("cards.png");
+	
 	private RedNetLogicModel _logicModel = new RedNetLogicModel();
 	private RedNetCardsModel _cardsModel = new RedNetCardsModel();
 	
@@ -26,7 +30,7 @@ public class RedNetLogicRenderer extends TileEntitySpecialRenderer implements IS
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "redcomp.png");
+		func_110628_a(REDCOMP);
 		
 		GL11.glPushMatrix();
 		GL11.glTranslated(0.12, 0, 0);
@@ -59,7 +63,7 @@ public class RedNetLogicRenderer extends TileEntitySpecialRenderer implements IS
 	{
 		TileEntityRedNetLogic logic = (TileEntityRedNetLogic) tileentity;
 		int rotation = tileentity.worldObj.getBlockMetadata(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord);
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "redcomp.png");
+		func_110628_a(REDCOMP);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5f, (float) z + 0.5F);
 		
@@ -73,7 +77,7 @@ public class RedNetLogicRenderer extends TileEntitySpecialRenderer implements IS
 		
 		// Manually translate and then render each slot with the cards texture
 		// up
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "cards.png");
+		func_110628_a(CARDS);
 		GL11.glTranslatef(-0.4375f, -0.375f, -0.390625f);
 		renderCard(logic.getLevelForSlot(0));
 		

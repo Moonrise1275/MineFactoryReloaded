@@ -1,6 +1,7 @@
 package powercrystals.minefactoryreloaded.gui.client;
 
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,10 +25,11 @@ public class GuiBioFuelGenerator extends GuiFactoryInventory
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 4210752);
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		if(_tileEntity.getTank() != null && _tileEntity.getTank().getLiquid() != null)
+		FluidTank tank = _tileEntity.getTank();
+		if(tank != null && tank.getFluidAmount() > 0)
 		{
-			int tankSize = _tileEntity.getTank().getLiquid().amount * _tankSizeMax / _tileEntity.getTank().getCapacity();
-			drawTank(142, 75, _tileEntity.getTank().getLiquid().itemID, _tileEntity.getTank().getLiquid().itemMeta, tankSize);
+			int tankSize = tank.getFluidAmount() * _tankSizeMax / tank.getCapacity();
+			drawTank(142, 75, tank.getFluid().fluidID, tankSize);
 		}
 		
 		drawBar(160, 75, ((TileEntityBioFuelGenerator)_tileEntity).getBufferMax(), ((TileEntityBioFuelGenerator)_tileEntity).getBuffer(), _barColorEnergy);
@@ -36,10 +38,13 @@ public class GuiBioFuelGenerator extends GuiFactoryInventory
 	@Override
 	protected void drawTooltips(int mouseX, int mouseY)
 	{
-		if(isPointInRegion(142, 15, 16, 60, mouseX, mouseY) && _tileEntity.getTank() != null && _tileEntity.getTank().getLiquid() != null && _tileEntity.getTank().getLiquid().amount > 0)
+		if(isPointInRegion(142, 15, 16, 60, mouseX, mouseY))
 		{
-			drawBarTooltip(_tileEntity.getTank().getLiquid().asItemStack().getDisplayName(),
-					"mB", _tileEntity.getTank().getLiquid().amount, _tileEntity.getTank().getCapacity(), mouseX, mouseY);
+			FluidTank tank = _tileEntity.getTank();
+			if (tank != null && tank.getFluidAmount() > 0)
+			{
+				drawBarTooltip(tank.getFluid().getFluid().getLocalizedName(), "mB", tank.getFluidAmount(), tank.getCapacity(), mouseX, mouseY);
+			}
 		}
 		
 		else if(isPointInRegion(161, 15, 8, 60, mouseX, mouseY))

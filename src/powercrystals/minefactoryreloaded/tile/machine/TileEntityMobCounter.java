@@ -1,6 +1,6 @@
 package powercrystals.minefactoryreloaded.tile.machine;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.ForgeDirection;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.core.HarvestAreaManager;
@@ -40,7 +40,7 @@ public class TileEntityMobCounter extends TileEntityFactory implements IHarvestA
 			return;
 		}
 		
-		int mobCount = worldObj.getEntitiesWithinAABB(EntityLiving.class, _ham.getHarvestArea().toAxisAlignedBB()).size();
+		int mobCount = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _ham.getHarvestArea().toAxisAlignedBB()).size();
 		if(mobCount != _lastMobCount)
 		{
 			_lastMobCount = mobCount;

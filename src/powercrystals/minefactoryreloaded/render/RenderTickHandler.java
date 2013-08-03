@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Point;
@@ -16,6 +17,9 @@ import cpw.mods.fml.common.TickType;
 
 public class RenderTickHandler implements ITickHandler
 {
+	private static final ResourceLocation LOCKON_BLUE = new ResourceLocation("minefactoryreloaded", "textures/hud/lockon_blue.png");
+	private static final ResourceLocation LOCKON_RED = new ResourceLocation("minefactoryreloaded", "textures/hud/lockon_red.png");
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
@@ -42,7 +46,7 @@ public class RenderTickHandler implements ITickHandler
 	private void renderHUD(float partialTicks)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(!mc.isGamePaused && mc.currentScreen == null && mc.thePlayer != null && mc.thePlayer.inventory.getCurrentItem() != null
+		if(/*!mc.isGamePaused &&*/ mc.currentScreen == null && mc.thePlayer != null && mc.thePlayer.inventory.getCurrentItem() != null
 				&& mc.thePlayer.inventory.getCurrentItem().getItem() instanceof ItemRocketLauncher)
 		{
 			ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
@@ -50,11 +54,11 @@ public class RenderTickHandler implements ITickHandler
 			
 			if(MineFactoryReloadedClient.instance.getLockedEntity() != Integer.MIN_VALUE)
 			{
-				mc.renderEngine.bindTexture("/powercrystals/minefactoryreloaded/textures/hud/lockon_blue.png");
+				mc.renderEngine.func_110577_a(LOCKON_BLUE);
 			}
 			else
 			{
-				mc.renderEngine.bindTexture("/powercrystals/minefactoryreloaded/textures/hud/lockon_red.png");
+				mc.renderEngine.func_110577_a(LOCKON_RED);
 			}
 			
 			GL11.glPushMatrix();

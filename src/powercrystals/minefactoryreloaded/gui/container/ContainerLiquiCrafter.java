@@ -6,9 +6,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidStack;
 import powercrystals.minefactoryreloaded.gui.slot.SlotFake;
 import powercrystals.minefactoryreloaded.gui.slot.SlotRemoveOnly;
 import powercrystals.minefactoryreloaded.gui.slot.SlotViewOnly;
@@ -21,8 +20,7 @@ public class ContainerLiquiCrafter extends ContainerFactoryInventory
 	private TileEntityLiquiCrafter _crafter;
 	
 	private int _tempTankIndex;
-	private int _tempLiquidId;
-	private int _tempLiquidMeta;
+	private int _tempFluidID;
 	
 	public ContainerLiquiCrafter(TileEntityLiquiCrafter crafter, InventoryPlayer inventoryPlayer)
 	{
@@ -58,23 +56,20 @@ public class ContainerLiquiCrafter extends ContainerFactoryInventory
 	{
 		super.detectAndSendChanges();
 		int tankIndex = (int)(_crafter.worldObj.getWorldTime() % 9);
-		ILiquidTank tank = _crafter.getTanks(ForgeDirection.UNKNOWN)[tankIndex];
-		LiquidStack l = tank.getLiquid();
+		FluidStack l = _crafter.getTank(tankIndex).getFluid();
 		
 		for(int i = 0; i < crafters.size(); i++)
 		{
 			((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 0, tankIndex);
 			if(l != null)
 			{
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 1, l.itemID);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 2, l.itemMeta);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 3, l.amount);
+				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 1, l.fluidID);
+				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 2, l.amount);
 			}
 			else
 			{
 				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 1, 0);
 				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 2, 0);
-				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 3, 0);
 			}
 		}
 	}
@@ -85,11 +80,10 @@ public class ContainerLiquiCrafter extends ContainerFactoryInventory
 	{
 		super.updateProgressBar(var, value);
 		if(var == 0) _tempTankIndex = value;
-		else if(var == 1) _tempLiquidId = value;
-		else if(var == 2) _tempLiquidMeta = value;
-		else if(var == 3)
+		else if(var == 1) _tempFluidID = value;
+		else if(var == 2)
 		{
-			((LiquidTank)_crafter.getTanks(ForgeDirection.UNKNOWN)[_tempTankIndex]).setLiquid(new LiquidStack(_tempLiquidId, value, _tempLiquidMeta));
+			_crafter.getTank(_tempTankIndex).setFluid(new FluidStack(_tempFluidID, value));
 		}
 	}
 	

@@ -2,8 +2,10 @@ package powercrystals.minefactoryreloaded.render.entity;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -19,7 +21,7 @@ public class EntitySafariNetRenderer extends Render
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		this.loadTexture("/gui/items.png");
+		this.func_110776_a(TextureMap.field_110576_c);
 		Tessellator var10 = Tessellator.instance;
 		
 		this.renderItemInFlight(var10, ((EntitySafariNet)entity).getIcon());
@@ -45,5 +47,15 @@ public class EntitySafariNetRenderer extends Render
 		par1Tessellator.addVertexWithUV(f4 - f5, f4 - f6, 0.0D, f1, f2);
 		par1Tessellator.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
 		par1Tessellator.draw();
+	}
+	
+	protected ResourceLocation getTexture(EntitySafariNet par1Entity)
+	{
+		return TextureMap.field_110576_c;
+	}
+	
+	protected ResourceLocation func_110775_a(Entity par1Entity)
+	{
+		return this.getTexture((EntitySafariNet)par1Entity);
 	}
 }

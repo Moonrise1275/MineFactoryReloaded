@@ -82,13 +82,15 @@ public class IconOverlay implements Icon {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getOriginX() {
-		return (int)(this.getMinU() * overlayIcon.getSheetWidth());
+		return overlayIcon.getOriginX();
+		//return (int)(this.getMinU() * overlayIcon.getSheetWidth());
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getOriginY() {
-		return (int)(this.getMinV() * overlayIcon.getSheetHeight());
+		return overlayIcon.getOriginY();
+		//return (int)(this.getMinV() * overlayIcon.getSheetHeight());
 	}
 
 	@Override
@@ -136,7 +138,7 @@ public class IconOverlay implements Icon {
 	public String getIconName() {
 		return overlayIcon.getIconName();
 	}
-
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getSheetWidth() {
@@ -148,5 +150,5 @@ public class IconOverlay implements Icon {
 	public int getSheetHeight() {
 		return overlayIcon.getSheetHeight();
 	}
-
+*/
 }

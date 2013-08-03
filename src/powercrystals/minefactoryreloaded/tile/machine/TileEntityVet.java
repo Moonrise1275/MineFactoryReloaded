@@ -2,7 +2,7 @@ package powercrystals.minefactoryreloaded.tile.machine;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -75,14 +75,14 @@ public class TileEntityVet extends TileEntityFactoryPowered implements IHarvestA
 	@Override
 	public boolean activateMachine()
 	{
-		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLiving.class, _areaManager.getHarvestArea().toAxisAlignedBB());
+		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _areaManager.getHarvestArea().toAxisAlignedBB());
 		for(Object o : entities)
 		{
-			if(!(o instanceof EntityLiving) || o instanceof EntityPlayer || o instanceof EntityMob)
+			if(!(o instanceof EntityLivingBase) || o instanceof EntityPlayer || o instanceof EntityMob)
 			{
 				continue;
 			}
-			EntityLiving e = (EntityLiving)o;
+			EntityLivingBase e = (EntityLivingBase)o;
 			
 			for(int i = 0; i < getSizeInventory(); i++)
 			{

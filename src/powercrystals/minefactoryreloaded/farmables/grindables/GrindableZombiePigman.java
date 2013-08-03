@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public class GrindableZombiePigman implements IFactoryGrindable2
 	}
 
 	@Override
-	public List<MobDrop> grind(World world, EntityLiving entity, Random random)
+	public List<MobDrop> grind(World world, EntityLivingBase entity, Random random)
 	{
 		List<MobDrop> drops = new ArrayList<MobDrop>();
 
@@ -40,7 +40,7 @@ public class GrindableZombiePigman implements IFactoryGrindable2
 	}
 
 	@Override
-	public boolean processEntity(EntityLiving entity)
+	public boolean processEntity(EntityLivingBase entity)
 	{
 		return false;
 	}

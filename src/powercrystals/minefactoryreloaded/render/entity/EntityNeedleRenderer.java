@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -13,9 +14,11 @@ import powercrystals.minefactoryreloaded.entity.EntityNeedle;
 @SideOnly(Side.CLIENT)
 public class EntityNeedleRenderer extends Render
 {
+	private static final ResourceLocation ARROWS = new ResourceLocation("textures/entity/arrow.png");
+	
 	public void renderNeedle(EntityNeedle needle, double par2, double par4, double par6, float par8, float par9)
 	{
-		this.loadTexture("/item/arrows.png");
+		this.func_110776_a(ARROWS);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)par2, (float)par4, (float)par6);
 		GL11.glRotatef(needle.prevRotationYaw + (needle.rotationYaw - needle.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
@@ -73,5 +76,15 @@ public class EntityNeedleRenderer extends Render
 	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9)
 	{
 		this.renderNeedle((EntityNeedle)par1Entity, par2, par4, par6, par8, par9);
+	}
+	
+	protected ResourceLocation getTexture(EntityNeedle par1Entity)
+	{
+		return ARROWS;
+	}
+	
+	protected ResourceLocation func_110775_a(Entity par1Entity)
+	{
+		return this.getTexture((EntityNeedle)par1Entity);
 	}
 }

@@ -5,11 +5,14 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -25,6 +28,7 @@ import powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryInventory;
 
 public class GuiFactoryInventory extends GuiContainer
 {
+	protected final ResourceLocation _background;
 	protected TileEntityFactoryInventory _tileEntity;
 	protected int _barSizeMax = 60;
 	protected int _tankSizeMax = 60;
@@ -33,6 +37,7 @@ public class GuiFactoryInventory extends GuiContainer
 	{
 		super(container);
 		_tileEntity = tileentity;
+		_background = MineFactoryReloadedCore.getGuiTexture(_tileEntity.getGuiBackground());
 	}
 	
 	@Override
@@ -65,10 +70,11 @@ public class GuiFactoryInventory extends GuiContainer
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 4210752);
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		if(_tileEntity.getTank() != null && _tileEntity.getTank().getLiquid() != null)
+		FluidTank tank = _tileEntity.getTank();
+		if(tank != null && tank.getFluidAmount() > 0)
 		{
-			int tankSize = _tileEntity.getTank().getLiquid().amount * _tankSizeMax / _tileEntity.getTank().getCapacity();
-			drawTank(122, 75, _tileEntity.getTank().getLiquid().itemID, _tileEntity.getTank().getLiquid().itemMeta, tankSize);
+			int tankSize = tank.getFluidAmount() * _tankSizeMax / tank.getCapacity();
+			drawTank(122, 75, tank.getFluid().fluidID, tankSize);
 		}
 	}
 	
@@ -76,7 +82,7 @@ public class GuiFactoryInventory extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float gameTicks, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(MineFactoryReloadedCore.guiFolder + _tileEntity.getGuiBackground());
+		this.mc.renderEngine.func_110577_a(_background);
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
@@ -92,10 +98,13 @@ public class GuiFactoryInventory extends GuiContainer
 	
 	protected void drawTooltips(int mouseX, int mouseY)
 	{
-		if(isPointInRegion(122, 15, 16, 60, mouseX, mouseY) && _tileEntity.getTank() != null && _tileEntity.getTank().getLiquid() != null && _tileEntity.getTank().getLiquid().amount > 0)
+		if(isPointInRegion(122, 15, 16, 60, mouseX, mouseY))
 		{
-			drawBarTooltip(_tileEntity.getTank().getLiquid().asItemStack().getDisplayName(),
-					"mB", _tileEntity.getTank().getLiquid().amount, _tileEntity.getTank().getCapacity(), mouseX, mouseY);
+			FluidTank tank = _tileEntity.getTank();
+			if (tank != null && tank.getFluidAmount() > 0)
+			{
+				drawBarTooltip(tank.getFluid().getFluid().getLocalizedName(), "mB", tank.getFluidAmount(), tank.getCapacity(), mouseX, mouseY);
+			}
 		}
 	}
 	
@@ -107,27 +116,19 @@ public class GuiFactoryInventory extends GuiContainer
 		drawRect(xOffset, yOffset - size, xOffset + 8, yOffset, color);
 	}
 	
-	protected void drawTank(int xOffset, int yOffset, int liquidId, int liquidMeta, int level)
+	protected void drawTank(int xOffset, int yOffset, int fluidID, int level)
 	{
-		LiquidStack stack = LiquidDictionary.getCanonicalLiquid(new LiquidStack(liquidId, 1, liquidMeta));
+		Fluid fluid = FluidRegistry.getFluid(fluidID);
 		
-		if(liquidId <= 0 || stack == null)
+		if(fluid == null)
 		{
 			return;
 		}
 		
-		ItemStack itemStack = stack.asItemStack();
-		
-		Icon icon = stack.getRenderingIcon();
+		Icon icon = fluid.getIcon();
 		if (icon == null)
 		{
-			try
-			{
-				icon = itemStack.getIconIndex();
-			}
-			catch (Throwable _) {}
-			if (icon == null)
-				icon = Block.lavaMoving.getIcon(0, 0);
+			icon = Block.lavaMoving.getIcon(0, 0);
 		}
 		
 		int vertOffset = 0;
@@ -147,12 +148,12 @@ public class GuiFactoryInventory extends GuiContainer
 				level = 0;
 			}
 			
-			mc.renderEngine.bindTexture(stack.getTextureSheet());
+			mc.renderEngine.func_110577_a(TextureMap.field_110575_b);
 			drawTexturedModelRectFromIcon(xOffset, yOffset - texHeight - vertOffset, icon, 16, texHeight);
 			vertOffset = vertOffset + 16;
 		}
 		
-		this.mc.renderEngine.bindTexture(MineFactoryReloadedCore.guiFolder + _tileEntity.getGuiBackground());
+		this.mc.renderEngine.func_110577_a(_background);
 		this.drawTexturedModalRect(xOffset, yOffset - 60, 176, 0, 16, 60);
 	}
 	

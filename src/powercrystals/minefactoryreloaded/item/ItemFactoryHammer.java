@@ -1,6 +1,6 @@
 package powercrystals.minefactoryreloaded.item;
 
-import buildcraft.api.tools.IToolWrench;
+//import buildcraft.api.tools.IToolWrench;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.IToolHammer;
 
-public class ItemFactoryHammer extends ItemFactory implements IToolHammer, IToolWrench
+public class ItemFactoryHammer extends ItemFactory implements IToolHammer //, IToolWrench
 {
 	public ItemFactoryHammer(int i)
 	{
@@ -29,7 +29,7 @@ public class ItemFactoryHammer extends ItemFactory implements IToolHammer, ITool
 		}
 		return false;
 	}
-	
+	/*
 	@Override
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
@@ -40,7 +40,7 @@ public class ItemFactoryHammer extends ItemFactory implements IToolHammer, ITool
 	public void wrenchUsed(EntityPlayer player, int x, int y, int z)
 	{
 	}
-	
+	*/
 	@Override
 	public boolean shouldPassSneakingClickToBlock(World world, int x, int y, int z)
 	{

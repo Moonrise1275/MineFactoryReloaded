@@ -5,8 +5,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
@@ -14,13 +15,15 @@ import net.minecraftforge.client.model.IModelCustom;
 @SideOnly(Side.CLIENT)
 public class RocketLauncherItemRenderer implements IItemRenderer
 {
+	private static final ResourceLocation ROCKETLAUNCHER = new ResourceLocation("minefactoryreloaded", "textures/itemmodels/RocketLauncher.png");
+	
 	private IModelCustom _model;
 	
 	public RocketLauncherItemRenderer()
 	{
 		try
 		{
-			_model = AdvancedModelLoader.loadModel("/powercrystals/minefactoryreloaded/models/RocketLauncher.obj");
+			_model = AdvancedModelLoader.loadModel("/assets/minefactoryreloaded/models/RocketLauncher.obj");
 		}
 		catch(Exception e)
 		{
@@ -43,11 +46,11 @@ public class RocketLauncherItemRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		RenderEngine renderengine = Minecraft.getMinecraft().renderEngine;
+		TextureManager renderengine = Minecraft.getMinecraft().renderEngine;
 		
 		if(renderengine != null)
 		{
-			renderengine.bindTexture("/textures/itemmodels/powercrystals/minefactoryreloaded/RocketLauncher.png");
+			renderengine.func_110577_a(ROCKETLAUNCHER);
 		}
 		
 		GL11.glPushMatrix();

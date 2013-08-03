@@ -243,18 +243,18 @@ public class Machine
 	
 	public void loadIcons(IconRegister ir)
 	{
-		_iconsActive[0] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.bottom");
-		_iconsActive[1] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.top");
-		_iconsActive[2] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.front");
-		_iconsActive[3] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.back");
-		_iconsActive[4] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.left");
-		_iconsActive[5] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".active.right");
-		_iconsIdle[0] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.bottom");
-		_iconsIdle[1] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.top");
-		_iconsIdle[2] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.front");
-		_iconsIdle[3] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.back");
-		_iconsIdle[4] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.left");
-		_iconsIdle[5] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getInternalName() + ".idle.right");
+		_iconsActive[0] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.bottom");
+		_iconsActive[1] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.top");
+		_iconsActive[2] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.front");
+		_iconsActive[3] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.back");
+		_iconsActive[4] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.left");
+		_iconsActive[5] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".active.right");
+		_iconsIdle[0] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.bottom");
+		_iconsIdle[1] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.top");
+		_iconsIdle[2] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.front");
+		_iconsIdle[3] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.back");
+		_iconsIdle[4] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.left");
+		_iconsIdle[5] = ir.registerIcon("minefactoryreloaded:" + getInternalName() + ".idle.right");
 	}
 	
 	public Icon getIcon(int side, boolean isActive)

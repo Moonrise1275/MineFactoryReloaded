@@ -7,11 +7,12 @@ import java.util.Map;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.oredict.OreDictionary;
 import powercrystals.core.oredict.OreDictTracker;
 import powercrystals.minefactoryreloaded.core.ITankContainerBucketable;
@@ -25,12 +26,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityUnifier extends TileEntityFactoryInventory implements ITankContainerBucketable
 {
-	private LiquidTank _tank;
+	private FluidTank _tank;
 	
-	private static LiquidStack _biofuel;
-	private static LiquidStack _ethanol;
-	private static LiquidStack _essence;
-	private static LiquidStack _liquidxp;
+	private static FluidStack _biofuel;
+	private static FluidStack _ethanol;
+	private static FluidStack _essence;
+	private static FluidStack _liquidxp;
 	private int _roundingCompensation;
 	
 	private Map<String, ItemStack> _preferredOutputs = new HashMap<String, ItemStack>();
@@ -38,16 +39,16 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	public TileEntityUnifier()
 	{
 		super(Machine.Unifier);
-		_tank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 4);
+		_tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 4);
 		_roundingCompensation = 1;
 	}
 
 	public static void updateUnifierLiquids()
 	{
-		_biofuel = LiquidDictionary.getLiquid("biofuel", 1);
-		_ethanol = LiquidDictionary.getLiquid("ethanol", 1);
-		_essence = LiquidDictionary.getLiquid("mobEssence", 1);
-		_liquidxp = LiquidDictionary.getLiquid("immibis.liquidxp", 1);
+		_biofuel = FluidRegistry.getFluidStack("biofuel", 1);
+		_ethanol = FluidRegistry.getFluidStack("ethanol", 1);
+		_essence = FluidRegistry.getFluidStack("mobessence", 1);
+		_liquidxp = FluidRegistry.getFluidStack("immibis.liquidxp", 1);
 	}
 	
 	@Override
@@ -203,7 +204,7 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	}
 	
 	@Override
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return _tank;
 	}
@@ -215,11 +216,11 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		if(resource == null || resource.amount == 0) return 0;
 		
-		LiquidStack converted = unifierTransformLiquid(resource, doFill);
+		FluidStack converted = unifierTransformLiquid(resource, doFill);
 		
 		if(converted == null || converted.amount == 0) return 0;
 		
@@ -235,40 +236,46 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 		}
 	}
 	
-	private LiquidStack unifierTransformLiquid(LiquidStack resource, boolean doFill)
+	private FluidStack unifierTransformLiquid(FluidStack resource, boolean doFill)
 	{
 		if(_ethanol != null && _biofuel != null &&
-				resource.itemID == _ethanol.itemID && resource.itemMeta == _ethanol.itemMeta)
+				resource.fluidID == _ethanol.fluidID)
 		{
-			return new LiquidStack(_biofuel.itemID, resource.amount, _biofuel.itemMeta);
+			return new FluidStack(_biofuel.fluidID, resource.amount);
 		}
 		else if(_ethanol != null && _biofuel != null &&
-				resource.itemID == _biofuel.itemID && resource.itemMeta == _biofuel.itemMeta)
+				resource.fluidID == _biofuel.fluidID)
 		{
-			return new LiquidStack(_ethanol.itemID, resource.amount, _ethanol.itemMeta);
+			return new FluidStack(_ethanol.fluidID, resource.amount);
 		}
 		else if(_essence != null && _liquidxp != null &&
-				resource.itemID == _essence.itemID && resource.itemMeta == _essence.itemMeta)
+				resource.fluidID == _essence.fluidID)
 		{
-			return new LiquidStack(_liquidxp.itemID, resource.amount * 2, _liquidxp.itemMeta);
+			return new FluidStack(_liquidxp.fluidID, resource.amount * 2);
 		}
 		else if(_essence != null && _liquidxp != null &&
-				resource.itemID == _liquidxp.itemID && resource.itemMeta == _liquidxp.itemMeta)
+				resource.fluidID == _liquidxp.fluidID)
 		{
 			if(doFill)
 			{
 				_roundingCompensation ^= (resource.amount & 1);
 			}
-			return new LiquidStack(_essence.itemID, resource.amount / 2 + (resource.amount & _roundingCompensation), _essence.itemMeta);
+			return new FluidStack(_essence.fluidID, resource.amount / 2 + (resource.amount & _roundingCompensation));
 		}
 		
 		return null;
 	}
-	
+	/*
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
 	{
 		return fill(ForgeDirection.UNKNOWN, resource, doFill);
+	}
+	*/
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return true;
 	}
 	
 	@Override
@@ -278,26 +285,41 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	}
 	
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
+	{
+		if (_tank.getFluid() != null && fluid != null && _tank.getFluid().fluidID == fluid.fluidID)
+			return _tank.drain(fluid.amount, doDrain);
+		return null;
+	}
+	
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return _tank.drain(maxDrain, doDrain);
 	}
-	
+	/*
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
 		return _tank.drain(maxDrain, doDrain);
 	}
-	
+	*/
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return new ILiquidTank[] { _tank };
+		return true;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		return new FluidTankInfo[] { _tank.getInfo() };
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		return _tank;
 	}
+	*/
 }

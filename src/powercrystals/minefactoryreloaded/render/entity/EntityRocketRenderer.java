@@ -4,9 +4,10 @@ import org.lwjgl.opengl.GL11;
 
 import powercrystals.minefactoryreloaded.entity.EntityRocket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import cpw.mods.fml.relauncher.Side;
@@ -15,13 +16,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EntityRocketRenderer extends Render
 {
+	private static final ResourceLocation ROCKET = new ResourceLocation("minefactoryreloaded", "textures/itemmodels/Rocket.png");
+	
 	private IModelCustom _model;
 	
 	public EntityRocketRenderer()
 	{
 		try
 		{
-			_model = AdvancedModelLoader.loadModel("/powercrystals/minefactoryreloaded/models/Rocket.obj");
+			_model = AdvancedModelLoader.loadModel("/assets/minefactoryreloaded/models/Rocket.obj");
 		}
 		catch(Exception e)
 		{
@@ -31,11 +34,11 @@ public class EntityRocketRenderer extends Render
 	
     public void renderRocket(EntityRocket rocket, double x, double y, double z, float yaw, float partialTicks)
     {
-		RenderEngine renderengine = Minecraft.getMinecraft().renderEngine;
+		TextureManager renderengine = Minecraft.getMinecraft().renderEngine;
 		
 		if(renderengine != null)
 		{
-			renderengine.bindTexture("/textures/itemmodels/powercrystals/minefactoryreloaded/Rocket.png");
+			renderengine.func_110577_a(ROCKET);
 		}
 		
 		GL11.glPushMatrix();
@@ -56,4 +59,14 @@ public class EntityRocketRenderer extends Render
     {
         this.renderRocket((EntityRocket)entity, x, y, z, yaw, partialTicks);
     }
+	
+	protected ResourceLocation getTexture(EntityRocket par1Entity)
+	{
+		return ROCKET;
+	}
+	
+	protected ResourceLocation func_110775_a(Entity par1Entity)
+	{
+		return this.getTexture((EntityRocket)par1Entity);
+	}
 }

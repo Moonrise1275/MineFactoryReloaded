@@ -13,7 +13,7 @@ public class EntityPinkSlime extends EntitySlime
 	public EntityPinkSlime(World world)
 	{
 		super(world);
-		this.texture = MineFactoryReloadedCore.mobTextureFolder + "pinkslime.png";
+		//this.texture = MineFactoryReloadedCore.mobTextureFolder + "pinkslime.png";
 	}
 	
 	@Override

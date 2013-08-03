@@ -6,7 +6,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -22,8 +22,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import powercrystals.core.position.IRotateableTile;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.api.rednet.IConnectableRedNet;
@@ -152,7 +152,7 @@ public class BlockFactoryMachine extends BlockContainer implements IConnectableR
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entity, ItemStack stack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
 	{
 		if(entity == null)
 		{
@@ -249,15 +249,15 @@ public class BlockFactoryMachine extends BlockContainer implements IConnectableR
 		if (te instanceof TileEntityFactoryInventory)
 		{
 			TileEntityFactoryInventory inv = (TileEntityFactoryInventory)te;
-			ILiquidTank tank = inv.getTank();
+			FluidTank tank = inv.getTank();
 			float tankPercent = 0, invPercent = 0;
 			boolean hasTank = false, hasInventory = false;
 			if (tank != null)
 			{
 				hasTank = true;
-				if (tank.getLiquid() != null)
+				if (tank.getFluid() != null)
 				{
-					tankPercent = ((float)tank.getLiquid().amount) / tank.getCapacity();
+					tankPercent = ((float)tank.getFluid().amount) / tank.getCapacity();
 				}
 			}
 			int[] accSlots = inv.getAccessibleSlotsFromSide(side);
@@ -286,14 +286,14 @@ public class BlockFactoryMachine extends BlockContainer implements IConnectableR
 		{
 			return false;
 		}
-		if(te instanceof ITankContainerBucketable && LiquidContainerRegistry.isEmptyContainer(entityplayer.inventory.getCurrentItem()) && ((ITankContainerBucketable)te).allowBucketDrain())
+		if(te instanceof ITankContainerBucketable && FluidContainerRegistry.isEmptyContainer(entityplayer.inventory.getCurrentItem()) && ((ITankContainerBucketable)te).allowBucketDrain())
 		{
 			if(MFRLiquidMover.manuallyDrainTank((ITankContainerBucketable)te, entityplayer))
 			{
 				return true;
 			}
 		}
-		else if(te instanceof ITankContainerBucketable && LiquidContainerRegistry.isFilledContainer(entityplayer.inventory.getCurrentItem()) && ((ITankContainerBucketable)te).allowBucketFill())
+		else if(te instanceof ITankContainerBucketable && FluidContainerRegistry.isFilledContainer(entityplayer.inventory.getCurrentItem()) && ((ITankContainerBucketable)te).allowBucketFill())
 		{
 			if(MFRLiquidMover.manuallyFillTank((ITankContainerBucketable)te, entityplayer))
 			{

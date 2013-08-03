@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import powercrystals.minefactoryreloaded.entity.EntitySafariNet;
 import powercrystals.minefactoryreloaded.gui.MFRCreativeTab;
@@ -37,11 +38,11 @@ public class ItemSafariNetLauncher extends ItemFactory
 			{
 				if(isCaptureMode(stack))
 				{
-					player.sendChatToPlayer("Changed to capture mode");
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d("Changed to capture mode"));
 				}
 				else
 				{
-					player.sendChatToPlayer("Changed to release mode");
+					player.sendChatToPlayer(ChatMessageComponent.func_111066_d("Changed to release mode"));
 				}
 			}
 			return stack;

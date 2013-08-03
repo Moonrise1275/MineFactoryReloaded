@@ -219,9 +219,9 @@ public abstract class MFRRegistry
 		return _randomMobProviders;
 	}
 
-	public static void registerLiquidDrinkHandler(int liquidId, ILiquidDrinkHandler liquidDrinkHandler)
+	public static void registerLiquidDrinkHandler(int fluidID, ILiquidDrinkHandler liquidDrinkHandler)
 	{
-		_liquidDrinkHandlers.put(liquidId, liquidDrinkHandler);
+		_liquidDrinkHandlers.put(fluidID, liquidDrinkHandler);
 	}
 
 	public static Map<Integer, ILiquidDrinkHandler> getLiquidDrinkHandlers()

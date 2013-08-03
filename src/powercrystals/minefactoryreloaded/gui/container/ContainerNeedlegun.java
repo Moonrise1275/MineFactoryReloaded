@@ -48,9 +48,9 @@ public class ContainerNeedlegun extends Container
 	}
 	
 	@Override
-	public void onCraftGuiClosed(EntityPlayer player)
+	public void onContainerClosed(EntityPlayer player)
 	{
-		super.onCraftGuiClosed(player);
+		super.onContainerClosed(player);
 		player.inventory.mainInventory[player.inventory.currentItem] = _ncw.getStack();
 	}
 }

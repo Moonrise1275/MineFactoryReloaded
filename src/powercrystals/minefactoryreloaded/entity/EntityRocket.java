@@ -5,7 +5,7 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class EntityRocket extends Entity
 {
 	private int _ticksAlive = 0;
-	private EntityLiving _owner;
+	private EntityLivingBase _owner;
 	private Entity _target;
 	
 	public EntityRocket(World world)
@@ -25,7 +25,7 @@ public class EntityRocket extends Entity
 		super(world);
 	}
 	
-	public EntityRocket(World world, EntityLiving owner)
+	public EntityRocket(World world, EntityLivingBase owner)
 	{
 		this(world);
 		setSize(1.0F, 1.0F);
@@ -35,7 +35,7 @@ public class EntityRocket extends Entity
 		_owner = owner;
 	}
 	
-	public EntityRocket(World world, EntityLiving owner, Entity target)
+	public EntityRocket(World world, EntityLivingBase owner, Entity target)
 	{
 		this(world, owner);
 		_target = target;

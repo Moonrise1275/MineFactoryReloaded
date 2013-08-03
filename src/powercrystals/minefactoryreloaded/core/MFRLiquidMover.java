@@ -4,10 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import powercrystals.core.position.BlockPosition;
 import powercrystals.core.util.UtilInventory;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactory;
@@ -23,7 +24,7 @@ public abstract class MFRLiquidMover
 	public static boolean manuallyFillTank(ITankContainerBucketable itcb, EntityPlayer entityplayer)
 	{
 		ItemStack ci = entityplayer.inventory.getCurrentItem();
-		LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(ci);
+		FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(ci);
 		if(liquid != null)
 		{
 			if(itcb.fill(ForgeDirection.UNKNOWN, liquid, false) == liquid.amount)
@@ -48,29 +49,29 @@ public abstract class MFRLiquidMover
 	public static boolean manuallyDrainTank(ITankContainerBucketable itcb, EntityPlayer entityplayer)
 	{
 		ItemStack ci = entityplayer.inventory.getCurrentItem();
-		if(LiquidContainerRegistry.isEmptyContainer(ci))
+		if(FluidContainerRegistry.isEmptyContainer(ci))
 		{
-			for(ILiquidTank tank : itcb.getTanks(ForgeDirection.UNKNOWN))
+			for(FluidTankInfo tank : itcb.getTankInfo(ForgeDirection.UNKNOWN))
 			{
-				LiquidStack tankLiquid = tank.getLiquid();
-				ItemStack filledBucket = LiquidContainerRegistry.fillLiquidContainer(tankLiquid, ci);
-				if(LiquidContainerRegistry.isFilledContainer(filledBucket))
+				FluidStack tankLiquid = tank.fluid;
+				ItemStack filledBucket = FluidContainerRegistry.fillFluidContainer(tankLiquid, ci);
+				if(FluidContainerRegistry.isFilledContainer(filledBucket))
 				{
-					LiquidStack bucketLiquid = LiquidContainerRegistry.getLiquidForFilledItem(filledBucket);
+					FluidStack bucketLiquid = FluidContainerRegistry.getFluidForFilledItem(filledBucket);
 					if(entityplayer.capabilities.isCreativeMode)
 					{
-						tank.drain(bucketLiquid.amount, true);
+						itcb.drain(ForgeDirection.UNKNOWN, bucketLiquid, true);
 						return true;
 					}
 					else if(ci.stackSize == 1)
 					{
-						tank.drain(bucketLiquid.amount, true);
+						itcb.drain(ForgeDirection.UNKNOWN, bucketLiquid, true);
 						entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem, filledBucket);
 						return true;
 					}
 					else if(entityplayer.inventory.addItemStackToInventory(filledBucket))
 					{
-						tank.drain(bucketLiquid.amount, true);
+						itcb.drain(ForgeDirection.UNKNOWN, bucketLiquid, true);
 						ci.stackSize -= 1;
 						return true;
 					}
@@ -81,18 +82,18 @@ public abstract class MFRLiquidMover
 		return false;
 	}
 	
-	public static void pumpLiquid(ILiquidTank tank, TileEntityFactory from)
+	public static void pumpLiquid(FluidTank tank, TileEntityFactory from)
 	{
-		if(tank != null && tank.getLiquid() != null && tank.getLiquid().amount > 0)
+		if(tank != null && tank.getFluid() != null && tank.getFluid().amount > 0)
 		{
-			LiquidStack l = tank.getLiquid().copy();
-			l.amount = Math.min(l.amount, LiquidContainerRegistry.BUCKET_VOLUME);
+			FluidStack l = tank.getFluid().copy();
+			l.amount = Math.min(l.amount, FluidContainerRegistry.BUCKET_VOLUME);
 			for(BlockPosition adj : new BlockPosition(from).getAdjacent(true))
 			{
 				TileEntity tile = from.worldObj.getBlockTileEntity(adj.x, adj.y, adj.z);
-				if(tile instanceof ITankContainer)
+				if(tile instanceof IFluidHandler)
 				{
-					int filled = ((ITankContainer)tile).fill(adj.orientation.getOpposite(), l, true);
+					int filled = ((IFluidHandler)tile).fill(adj.orientation.getOpposite(), l, true);
 					tank.drain(filled, true);
 					l.amount -= filled;
 					if(l.amount <= 0)

@@ -57,8 +57,8 @@ public class BlockVineScaffold extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		_sideIcon = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".side");
-		_topIcon = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".top");
+		_sideIcon = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".side");
+		_topIcon = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".top");
 	}
 	
 	@Override

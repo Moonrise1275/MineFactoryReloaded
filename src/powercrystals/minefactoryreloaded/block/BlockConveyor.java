@@ -7,7 +7,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,8 +58,8 @@ public class BlockConveyor extends BlockContainer implements IConnectableRedNet
 	{
 		for(int i = 0; i < _names.length; i++)
 		{
-			_iconsActive[i] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".active." + _names[i]);
-			_iconsStopped[i] = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".stopped." + _names[i]);
+			_iconsActive[i] = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".active." + _names[i]);
+			_iconsStopped[i] = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".stopped." + _names[i]);
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class BlockConveyor extends BlockContainer implements IConnectableRedNet
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entity, ItemStack stack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack)
 	{
 		if(entity == null)
 		{
@@ -139,7 +139,7 @@ public class BlockConveyor extends BlockContainer implements IConnectableRedNet
 			return;
 		}
 		
-		if(!(entity instanceof EntityItem || entity instanceof EntityXPOrb || (entity instanceof EntityLiving && MFRConfig.conveyorCaptureNonItems
+		if(!(entity instanceof EntityItem || entity instanceof EntityXPOrb || (entity instanceof EntityLivingBase && MFRConfig.conveyorCaptureNonItems
 				.getBoolean(true))))
 		{
 			return;
@@ -218,9 +218,9 @@ public class BlockConveyor extends BlockContainer implements IConnectableRedNet
 		
 		setEntityVelocity(entity, xVelocity, yVelocity, zVelocity);
 		
-		if(entity instanceof EntityLiving)
+		if(entity instanceof EntityLivingBase)
 		{
-			((EntityLiving)entity).fallDistance = 0;
+			((EntityLivingBase)entity).fallDistance = 0;
 		}
 		else if(entity instanceof EntityItem)
 		{

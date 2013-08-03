@@ -2,7 +2,7 @@ package powercrystals.minefactoryreloaded.farmables.safarinethandlers;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +13,7 @@ public class EntityLivingHandler implements ISafariNetHandler
 	@Override
 	public Class<?> validFor()
 	{
-		return EntityLiving.class;
+		return EntityLivingBase.class;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

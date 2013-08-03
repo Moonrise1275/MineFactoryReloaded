@@ -30,10 +30,10 @@ public class GuiPlanter extends GuiUpgradable
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 4, 4210752);
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		if(_tileEntity.getTank() != null && _tileEntity.getTank().getLiquid() != null)
+		if(_tileEntity.getTank() != null && _tileEntity.getTank().getFluid() != null)
 		{
-			int tankSize = _tileEntity.getTank().getLiquid().amount * _tankSizeMax / _tileEntity.getTank().getCapacity();
-			drawTank(122, 75, _tileEntity.getTank().getLiquid().itemID, _tileEntity.getTank().getLiquid().itemMeta, tankSize);
+			int tankSize = _tileEntity.getTank().getFluid().amount * _tankSizeMax / _tileEntity.getTank().getCapacity();
+			drawTank(122, 75, _tileEntity.getTank().getFluid().fluidID, tankSize);
 		}
 	}
 }

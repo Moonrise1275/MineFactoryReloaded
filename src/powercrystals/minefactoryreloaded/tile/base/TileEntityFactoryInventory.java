@@ -6,21 +6,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.StringTranslate;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
-import powercrystals.core.asm.relauncher.Implementable;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+//import powercrystals.core.asm.relauncher.Implementable;
 import powercrystals.core.position.BlockPosition;
 import powercrystals.minefactoryreloaded.core.BlockNBTManager;
 import powercrystals.minefactoryreloaded.core.MFRLiquidMover;
 import powercrystals.minefactoryreloaded.setup.Machine;
-import buildcraft.api.gates.IAction; 
+//import buildcraft.api.gates.IAction; 
 
-@Implementable("buildcraft.core.IMachine")
+//@Implementable("buildcraft.core.IMachine")
 public abstract class TileEntityFactoryInventory extends TileEntityFactory implements ISidedInventory
 {
 	protected Machine machine;
@@ -37,7 +36,7 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	@Override
 	public String getInvName()
 	{
-		return _hasInvName ? _invName : StringTranslate.getInstance().translateNamedKey(machine.getInternalName());
+		return _hasInvName ? _invName : StatCollector.translateToLocal(machine.getInternalName() + ".name");
 	}
 	
 	@Override
@@ -64,7 +63,7 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 		}
 	}
 	
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return null;
 	}
@@ -162,7 +161,7 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return true;
 	}
@@ -197,38 +196,32 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 		onFactoryInventoryChanged();
 		
 		boolean foundLiquid = false;
-		ILiquidTank tank = getTank();
+		FluidTank tank = getTank();
 		
 		int tankAmount = nbttagcompound.getInteger("tankAmount");
-		if (tank != null && nbttagcompound.hasKey("tankFluidName"))
+		if (tank != null && tankAmount > 0 && nbttagcompound.hasKey("tankFluidName"))
 		{
-			LiquidStack fluid = LiquidDictionary.getLiquid(nbttagcompound.getString("tankFluidName"), tankAmount);
+			FluidStack fluid = FluidRegistry.getFluidStack(nbttagcompound.getString("tankFluidName"), tankAmount);
 			if (fluid != null)
 			{
-				if(fluid.amount > tank.getCapacity())
-				{
-					fluid.amount = tank.getCapacity();
-				}
-				
-				((LiquidTank)tank).setLiquid(fluid);
-				
+				tank.setFluid(fluid);
 				foundLiquid = true;
 			}
 		}
-		if (!foundLiquid)
+		if (tank != null && tankAmount > 0 && !foundLiquid && nbttagcompound.hasKey("tankFluidID"))
 		{
-			int tankItemId = nbttagcompound.getInteger("tankItemId");
-			int tankItemMeta = nbttagcompound.getInteger("tankItemMeta");
+			int fluidId = nbttagcompound.getInteger("tankFluidID");
+			FluidStack fluid = FluidRegistry.getFluidStack(FluidRegistry.getFluidName(fluidId), tankAmount);
 			
-			if(tank != null && Item.itemsList[tankItemId] != null && LiquidContainerRegistry.isLiquid(new ItemStack(tankItemId, 1, tankItemMeta)))
+			if(fluid != null)
 			{
-				((LiquidTank)tank).setLiquid(new LiquidStack(tankItemId, tankAmount, tankItemMeta));
-				
-				if(tank.getLiquid() != null && tank.getLiquid().amount > tank.getCapacity())
-				{
-					tank.getLiquid().amount = tank.getCapacity();
-				}
+				tank.setFluid(fluid);
+				foundLiquid = true;
 			}
+		}
+		if (tank != null && !foundLiquid)
+		{
+			tank.setFluid(null);
 		}
 		
 		for(int i = 0; i < getSizeInventory(); i++)
@@ -264,17 +257,26 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 				nbttaglist.appendTag(nbttagcompound1);
 			}
 		}
-		if(getTank() != null && getTank().getLiquid() != null)
+		FluidTank tank = getTank();
+		if(tank != null)
 		{
-			LiquidStack fluid = getTank().getLiquid();
-			nbttagcompound.setInteger("tankAmount", fluid.amount);
-			String name = LiquidDictionary.findLiquidName(fluid);
-			if (name != null)
+			FluidStack fluid = tank.getFluid();
+			if (fluid != null)
 			{
-				nbttagcompound.setString("tankFluidName", name);
+				nbttagcompound.setInteger("tankAmount", fluid.amount);
+				String name = fluid.getFluid().getName();
+				if (name != null)
+				{
+					nbttagcompound.setString("tankFluidName", name);
+				}
+				nbttagcompound.setInteger("tankFluidID", fluid.fluidID);
 			}
-			nbttagcompound.setInteger("tankItemId", getTank().getLiquid().itemID);
-			nbttagcompound.setInteger("tankMeta", getTank().getLiquid().itemMeta);
+			else
+			{
+				nbttagcompound.removeTag("tankAmount");
+				nbttagcompound.removeTag("tankFluidName");
+				nbttagcompound.removeTag("tankFluidID");
+			}
 		}
 		
 		if (this.isInvNameLocalized())
@@ -325,7 +327,7 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{
-		return this.isStackValidForSlot(slot, itemstack);
+		return this.isItemValidForSlot(slot, itemstack);
 	}
 	
 	@Override
@@ -369,7 +371,7 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	{
 		return false;
 	}
-	
+	/*
 	public boolean allowActions()
 	{
 		return false;
@@ -379,4 +381,5 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	{
 		return this.allowActions();
 	}
+	*/
 }

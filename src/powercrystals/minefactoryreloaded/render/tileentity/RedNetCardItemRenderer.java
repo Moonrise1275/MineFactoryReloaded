@@ -1,8 +1,9 @@
 package powercrystals.minefactoryreloaded.render.tileentity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -12,6 +13,8 @@ import powercrystals.minefactoryreloaded.render.model.RedNetCardsModel;
 
 public class RedNetCardItemRenderer implements IItemRenderer
 {
+	private static final ResourceLocation CARDS = MineFactoryReloadedCore.getTileEntityTexture("cards.png");
+	
 	private RedNetCardsModel _cardsModel = new RedNetCardsModel();
 	
 	@Override
@@ -29,11 +32,11 @@ public class RedNetCardItemRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		RenderEngine renderengine = Minecraft.getMinecraft().renderEngine;
+		TextureManager renderengine = Minecraft.getMinecraft().renderEngine;
 		
 		if(renderengine != null)
 		{
-			renderengine.bindTexture(MineFactoryReloadedCore.tileEntityFolder + "cards.png");
+			renderengine.func_110577_a(CARDS);
 		}
 		
 		GL11.glPushMatrix();

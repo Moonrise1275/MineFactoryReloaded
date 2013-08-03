@@ -1,6 +1,6 @@
 package powercrystals.minefactoryreloaded.tile.conveyor;
 
-import buildcraft.api.gates.IAction;
+//import buildcraft.api.gates.IAction;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-import powercrystals.core.asm.relauncher.Implementable;
+//import powercrystals.core.asm.relauncher.Implementable;
 import powercrystals.core.net.PacketWrapper;
 import powercrystals.core.position.IRotateableTile;
 import powercrystals.core.util.Util;
@@ -21,7 +21,7 @@ import powercrystals.minefactoryreloaded.net.Packets;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-@Implementable("buildcraft.core.IMachine")
+//@Implementable("buildcraft.core.IMachine")
 public class TileEntityConveyor extends TileEntity implements IRotateableTile, ISidedInventory
 {
 	private int _dye = -1;
@@ -368,7 +368,7 @@ public class TileEntityConveyor extends TileEntity implements IRotateableTile, I
     }
     
     @Override
-	public boolean isStackValidForSlot(int slot, ItemStack stack)
+	public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
     	return true;
     }
@@ -417,13 +417,14 @@ public class TileEntityConveyor extends TileEntity implements IRotateableTile, I
     	return true;
     }
     
-    @Override
+	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
-    {
-    	return false;
-    }
+	{
+		return false;
+	}
     
     //IMachine
+	/*
 	public boolean isActive()
 	{
 		return false;
@@ -448,7 +449,7 @@ public class TileEntityConveyor extends TileEntity implements IRotateableTile, I
 	{
 		return this.allowActions();
 	}
-	
+	*/
 	// RedNet
 	public void onRedNetChanged(int value)
 	{

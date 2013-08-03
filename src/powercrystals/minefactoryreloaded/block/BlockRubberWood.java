@@ -35,8 +35,8 @@ public class BlockRubberWood extends BlockLog implements IConnectableRedNet
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		_iconLogSide = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".side");
-		_iconLogTop = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".top");
+		_iconLogSide = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".side");
+		_iconLogTop = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".top");
 	}
 	
 	@Override

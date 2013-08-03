@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import buildcraft.api.transport.FacadeManager;
+//import buildcraft.api.transport.FacadeManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
@@ -22,10 +23,9 @@ import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.liquids.LiquidContainerData;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import powercrystals.core.mod.BaseMod;
@@ -107,8 +107,8 @@ import powercrystals.minefactoryreloaded.setup.BehaviorDispenseSafariNet;
 import powercrystals.minefactoryreloaded.setup.MFRConfig;
 import powercrystals.minefactoryreloaded.setup.MineFactoryReloadedFuelHandler;
 import powercrystals.minefactoryreloaded.setup.MineFactoryReloadedWorldGen;
-import powercrystals.minefactoryreloaded.setup.recipe.GregTech;
-import powercrystals.minefactoryreloaded.setup.recipe.ThermalExpansion;
+//import powercrystals.minefactoryreloaded.setup.recipe.GregTech;
+//import powercrystals.minefactoryreloaded.setup.recipe.ThermalExpansion;
 import powercrystals.minefactoryreloaded.setup.recipe.Vanilla;
 import powercrystals.minefactoryreloaded.setup.village.VillageCreationHandler;
 import powercrystals.minefactoryreloaded.setup.village.VillageTradeHandler;
@@ -119,9 +119,7 @@ import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetLogic;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetCable;
 
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -136,7 +134,7 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = MineFactoryReloadedCore.modId, name = MineFactoryReloadedCore.modName, version = MineFactoryReloadedCore.version,
-dependencies = "required-after:PowerCrystalsCore@[1.1.7,);after:BuildCraft|Core;after:BuildCraft|Factory;after:BuildCraft|Energy;after:BuildCraft|Builders;after:BuildCraft|Transport;after:IC2")
+dependencies = "required-after:PowerCrystalsCore@[1.2.0B1,);after:ic2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
 clientPacketHandlerSpec = @SidedPacketHandler(channels = { MineFactoryReloadedCore.modNetworkChannel }, packetHandler = ClientPacketHandler.class),
 serverPacketHandlerSpec = @SidedPacketHandler(channels = { MineFactoryReloadedCore.modNetworkChannel }, packetHandler = ServerPacketHandler.class),
@@ -148,13 +146,8 @@ public class MineFactoryReloadedCore extends BaseMod
 	
 	public static final String modId = "MineFactoryReloaded";
 	public static final String modNetworkChannel = "MFReloaded";
-	public static final String version = "1.5.1R2.7.0B8";
-	public static final String modName = "Minefactory Reloaded";
-	
-	public static final String guiFolder = "/powercrystals/minefactoryreloaded/textures/gui/";
-	public static final String villagerFolder = "/powercrystals/minefactoryreloaded/textures/villager/";
-	public static final String tileEntityFolder = "/powercrystals/minefactoryreloaded/textures/tileentity/";
-	public static final String mobTextureFolder = "/textures/mob/powercrystals/minefactoryreloaded/";
+	public static final String version = "1.6.2R2.7.0B8";
+	public static final String modName = "MineFactory Reloaded";
 	
 	public static int renderIdConveyor = 1000;
 	public static int renderIdFactoryGlassPane = 1001;
@@ -261,20 +254,41 @@ public class MineFactoryReloadedCore extends BaseMod
 	
 	public static ItemFactoryCup plasticCup;
 
+	public static ResourceLocation getGuiTexture(String texture)
+	{
+		return new ResourceLocation("minefactoryreloaded", "textures/gui/" + texture);
+	}
+	
+	public static ResourceLocation getVillagerTexture(String texture)
+	{
+		return new ResourceLocation("minefactoryreloaded", "textures/villager/" + texture);
+	}
+	
+	public static ResourceLocation getTileEntityTexture(String texture)
+	{
+		return new ResourceLocation("minefactoryreloaded", "textures/tileentity/" + texture);
+	}
+	
+	public static ResourceLocation getMobTexture(String texture)
+	{
+		return new ResourceLocation("minefactoryreloaded", "textures/mob/" + texture);
+	}
+	
 	private static MineFactoryReloadedCore instance;
-
+	
 	public static MineFactoryReloadedCore instance()
 	{
 		return instance;
 	}
 	
 	private static int itemOffset;
+	
 	public static int getItemOffset()
 	{
 		return itemOffset;
 	}
 
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt)
 	{
 		setConfigFolderBase(evt.getModConfigurationDirectory());
@@ -285,16 +299,26 @@ public class MineFactoryReloadedCore extends BaseMod
 		extractLang(new String[] { "en_US", "es_AR", "es_ES", "es_MX", "es_UY", "es_VE", "zh_CN", "zh_TW", "ru_RU", "ko_KR", "de_DE" });
 		loadLang();
 		
-		milkLiquid = new BlockFactoryFluid(MFRConfig.milkStillBlockId.getInt(), "milk");
-		sludgeLiquid = new BlockFactoryFluid(MFRConfig.sludgeStillBlockId.getInt(), "sludge");
-		sewageLiquid = new BlockFactoryFluid(MFRConfig.sewageStillBlockId.getInt(), "sewage");
-		essenceLiquid = new BlockFactoryFluid(MFRConfig.essenceStillBlockId.getInt(), "essence");
-		biofuelLiquid = new BlockFactoryFluid(MFRConfig.biofuelStillBlockId.getInt(), "biofuel");
-		meatLiquid = new BlockFactoryFluid(MFRConfig.meatStillBlockId.getInt(), "meat");
-		pinkSlimeLiquid = new BlockPinkSlimeFluid(MFRConfig.pinkslimeStillBlockId.getInt(), "pinkslime");
-		chocolateMilkLiquid = new BlockFactoryFluid(MFRConfig.chocolateMilkStillBlockId.getInt(), "chocolatemilk");
-		mushroomSoupLiquid = new BlockFactoryFluid(MFRConfig.mushroomSoupStillBlockId.getInt(), "mushroomsoup");
-
+		FluidRegistry.registerFluid(new Fluid("milk"));
+		FluidRegistry.registerFluid(new Fluid("sludge"));
+		FluidRegistry.registerFluid(new Fluid("sewage"));
+		FluidRegistry.registerFluid(new Fluid("mobessence").setLuminosity(7));
+		FluidRegistry.registerFluid(new Fluid("biofuel"));
+		FluidRegistry.registerFluid(new Fluid("meat"));
+		FluidRegistry.registerFluid(new Fluid("pinkslime"));
+		FluidRegistry.registerFluid(new Fluid("chocolatemilk"));
+		FluidRegistry.registerFluid(new Fluid("mushroomsoup"));
+		
+		milkLiquid = new BlockFactoryFluid(MFRConfig.milkStillBlockId.getInt(), FluidRegistry.getFluid("milk"), "milk");
+		sludgeLiquid = new BlockFactoryFluid(MFRConfig.sludgeStillBlockId.getInt(), FluidRegistry.getFluid("sludge"), "sludge");
+		sewageLiquid = new BlockFactoryFluid(MFRConfig.sewageStillBlockId.getInt(), FluidRegistry.getFluid("sewage"), "sewage");
+		essenceLiquid = new BlockFactoryFluid(MFRConfig.essenceStillBlockId.getInt(), FluidRegistry.getFluid("mobessence"), "essence");
+		biofuelLiquid = new BlockFactoryFluid(MFRConfig.biofuelStillBlockId.getInt(), FluidRegistry.getFluid("biofuel"), "biofuel");
+		meatLiquid = new BlockFactoryFluid(MFRConfig.meatStillBlockId.getInt(), FluidRegistry.getFluid("meat"), "meat");
+		pinkSlimeLiquid = new BlockPinkSlimeFluid(MFRConfig.pinkslimeStillBlockId.getInt(), FluidRegistry.getFluid("pinkslime"), "pinkslime");
+		chocolateMilkLiquid = new BlockFactoryFluid(MFRConfig.chocolateMilkStillBlockId.getInt(), FluidRegistry.getFluid("chocolatemilk"), "chocolatemilk");
+		mushroomSoupLiquid = new BlockFactoryFluid(MFRConfig.mushroomSoupStillBlockId.getInt(), FluidRegistry.getFluid("mushroomsoup"), "mushroomsoup");
+		 
 		sewageBucketItem = (new ItemFactoryBucket(MFRConfig.sewageBucketItemId.getInt(), sewageLiquid.blockID)).setUnlocalizedName("mfr.bucket.sewage").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
 		sludgeBucketItem = (new ItemFactoryBucket(MFRConfig.sludgeBucketItemId.getInt(), sludgeLiquid.blockID)).setUnlocalizedName("mfr.bucket.sludge").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
 		mobEssenceBucketItem = (new ItemFactoryBucket(MFRConfig.mobEssenceBucketItemId.getInt(), essenceLiquid.blockID)).setUnlocalizedName("mfr.bucket.essence").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
@@ -303,6 +327,17 @@ public class MineFactoryReloadedCore extends BaseMod
 		pinkSlimeBucketItem = (new ItemFactoryBucket(MFRConfig.pinkSlimeBucketItemId.getInt(), pinkSlimeLiquid.blockID)).setUnlocalizedName("mfr.bucket.pinkslime").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
 		chocolateMilkBucketItem = (new ItemFactoryBucket(MFRConfig.chocolateMilkBucketItemId.getInt(), chocolateMilkLiquid.blockID)).setUnlocalizedName("mfr.bucket.chocolatemilk").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
 		mushroomSoupBucketItem = (new ItemFactoryBucket(MFRConfig.mushroomSoupBucketItemId.getInt(), mushroomSoupLiquid.blockID)).setUnlocalizedName("mfr.bucket.mushroomsoup").setMaxStackSize(1).setContainerItem(Item.bucketEmpty);
+		
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("milk"), new ItemStack(Item.bucketMilk), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("sludge"), new ItemStack(sludgeBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("sewage"), new ItemStack(sewageBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("mobessence"), new ItemStack(mobEssenceBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("biofuel"), new ItemStack(bioFuelBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("meat"), new ItemStack(meatBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("pinkslime"), new ItemStack(pinkSlimeBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("chocolatemilk"), new ItemStack(chocolateMilkBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("mushroomsoup"), new ItemStack(mushroomSoupBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("mushroomsoup"), new ItemStack(Item.bowlSoup), new ItemStack(Item.bowlEmpty));
 		
 		itemOffset = sewageBucketItem.itemID - MFRConfig.sewageBucketItemId.getInt();
 		
@@ -314,7 +349,7 @@ public class MineFactoryReloadedCore extends BaseMod
 		}
 	}
 
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent evt)
 	{
 		instance = this;
@@ -384,8 +419,8 @@ public class MineFactoryReloadedCore extends BaseMod
 		needlegunAmmoEmptyItem = (new ItemFactory(MFRConfig.needlegunAmmoEmptyItemId.getInt())).setUnlocalizedName("mfr.needlegun.ammo.empty");
 		needlegunAmmoStandardItem = (new ItemNeedlegunAmmoStandard(MFRConfig.needlegunAmmoStandardItemId.getInt())).setUnlocalizedName("mfr.needlegun.ammo.standard");
 		needlegunAmmoLavaItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoLavaItemId.getInt(), Block.lavaMoving.blockID, 3)).setUnlocalizedName("mfr.needlegun.ammo.lava");
-		needlegunAmmoSludgeItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoSludgeItemId.getInt(), sludgeLiquid.blockID, 6)).setUnlocalizedName("mfr.needlegun.ammo.sludge");
-		needlegunAmmoSewageItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoSewageItemId.getInt(), sewageLiquid.blockID, 6)).setUnlocalizedName("mfr.needlegun.ammo.sewage");
+		needlegunAmmoSludgeItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoSludgeItemId.getInt(), sludgeLiquid.blockID, 1)).setUnlocalizedName("mfr.needlegun.ammo.sludge");
+		needlegunAmmoSewageItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoSewageItemId.getInt(), sewageLiquid.blockID, 1)).setUnlocalizedName("mfr.needlegun.ammo.sewage");
 		needlegunAmmoFireItem = (new ItemNeedlegunAmmoFire(MFRConfig.needlegunAmmoFireItemId.getInt())).setUnlocalizedName("mfr.needlegun.ammo.fire");
 		needlegunAmmoAnvilItem = (new ItemNeedlegunAmmoBlock(MFRConfig.needlegunAmmoAnvilItemId.getInt(), Block.anvil.blockID, 2)).setUnlocalizedName("mfr.needlegun.ammo.anvil").setMaxDamage(0);
 		plasticCup = (ItemFactoryCup)new ItemFactoryCup(MFRConfig.plasticCupItemId.getInt(), 64, 16).setUnlocalizedName("mfr.bucket.plasticcup");
@@ -479,8 +514,8 @@ public class MineFactoryReloadedCore extends BaseMod
 		BlockDispenser.dispenseBehaviorRegistry.putObject(safariNetItem, behavior);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(safariNetSingleItem, behavior);
 		
-		DispenserBehaviors.func_96467_a(); // Work around to make the below behavior actually /exist/ before the server starts.
-		behavior = (IBehaviorDispenseItem)BlockDispenser.dispenseBehaviorRegistry.func_82594_a(Item.bucketWater);
+		DispenserBehaviors.registerVanillaDispenserBehaviors(); // Work around to make the below behavior actually /exist/ before the server starts.
+		behavior = (IBehaviorDispenseItem)BlockDispenser.dispenseBehaviorRegistry.getObject(Item.bucketWater);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(sewageBucketItem, behavior);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(sludgeBucketItem, behavior);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(mobEssenceBucketItem, behavior);
@@ -495,7 +530,8 @@ public class MineFactoryReloadedCore extends BaseMod
 		ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST).addItem(new WeightedRandomChestContent(new ItemStack(safariNetSingleItem), 1, 1, 25));
 		
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageCreationHandler());
-		VillagerRegistry.instance().registerVillagerType(MFRConfig.zoolologistEntityId.getInt(), villagerFolder + "zoologist.png");
+		VillagerRegistry.instance().registerVillagerId(MFRConfig.zoolologistEntityId.getInt());
+		VillagerRegistry.instance().registerVillagerSkin(MFRConfig.zoolologistEntityId.getInt(), getVillagerTexture("zoologist.png"));
 		VillagerRegistry.instance().registerVillageTradeHandler(MFRConfig.zoolologistEntityId.getInt(), new VillageTradeHandler());
 		
 		GameRegistry.registerWorldGenerator(new MineFactoryReloadedWorldGen());
@@ -503,21 +539,9 @@ public class MineFactoryReloadedCore extends BaseMod
 		TickRegistry.registerScheduledTickHandler(new UpdateManager(this), Side.CLIENT);
 	}
 	
-	@PostInit
+	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("milk", new LiquidStack(milkLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("sludge", new LiquidStack(sludgeLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(sludgeBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("sewage", new LiquidStack(sewageLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(sewageBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("mobEssence", new LiquidStack(essenceLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(mobEssenceBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("biofuel", new LiquidStack(biofuelLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(bioFuelBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("meat", new LiquidStack(meatLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(meatBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("pinkslime", new LiquidStack(pinkSlimeLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(pinkSlimeBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("chocolatemilk", new LiquidStack(chocolateMilkLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(chocolateMilkBucketItem), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("mushroomsoup", new LiquidStack(mushroomSoupLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(mushroomSoupBucketItem), new ItemStack(Item.bucketEmpty)));
-		
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("mushroomsoup", new LiquidStack(mushroomSoupLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(Item.bowlSoup), new ItemStack(Item.bowlEmpty)));
-		
 		TileEntityUnifier.updateUnifierLiquids();
 		
 		for(ItemStack s : OreDictionary.getOres("itemRubber"))
@@ -545,7 +569,7 @@ public class MineFactoryReloadedCore extends BaseMod
 		{
 			new Vanilla().registerRecipes();
 		}
-		
+		/*
 		if(MFRConfig.thermalExpansionRecipes.getBoolean(false))
 		{
 			new ThermalExpansion().registerRecipes();
@@ -555,7 +579,8 @@ public class MineFactoryReloadedCore extends BaseMod
 		{
 			new GregTech().registerRecipes();
 		}
-		
+		*/
+		/*
 		for(int i = 0; i < 14; i++)
 		{
 			FacadeManager.addFacade(new ItemStack(factoryDecorativeBrickBlock.blockID, 1, i));
@@ -569,6 +594,7 @@ public class MineFactoryReloadedCore extends BaseMod
 		FacadeManager.addFacade(new ItemStack(factoryRoadBlock.blockID, 1, 0));
 		FacadeManager.addFacade(new ItemStack(factoryRoadBlock.blockID, 1, 1));
 		FacadeManager.addFacade(new ItemStack(factoryRoadBlock.blockID, 1, 4));
+		*/
 	}
 	
 	@ForgeSubscribe

@@ -10,11 +10,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import powercrystals.core.position.Area;
 import powercrystals.core.position.BlockPosition;
 import powercrystals.minefactoryreloaded.MFRRegistry;
@@ -47,13 +48,13 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	private TreeHarvestManager _treeManager;
 	private BlockPosition _lastTree;
 	
-	private LiquidTank _tank;
+	private FluidTank _tank;
 	
 	public TileEntityHarvester()
 	{
 		super(Machine.Harvester);
 		_areaManager = new HarvestAreaManager(this, 1, 0, 0);
-		_tank = new LiquidTank(4 * LiquidContainerRegistry.BUCKET_VOLUME);
+		_tank = new FluidTank(4 * FluidContainerRegistry.BUCKET_VOLUME);
 		_settings = new HashMap<String, Boolean>();
 		
 		_settings.put("silkTouch", false);
@@ -94,7 +95,7 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	}
 	
 	@Override
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return _tank;
 	}
@@ -162,7 +163,7 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 		
 		harvestable.postHarvest(worldObj, targetCoords.x, targetCoords.y, targetCoords.z);
 		
-		_tank.fill(LiquidDictionary.getLiquid("sludge", 10), true);
+		_tank.fill(FluidRegistry.getFluidStack("sludge", 10), true);
 		
 		return true;
 	}
@@ -296,9 +297,15 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return 0;
+	}
+	
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
@@ -306,37 +313,49 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	{
 		return true;
 	}
-	
+	/*
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
-	
+	*/
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
 	{
 		return null;
 	}
 	
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
-	
+	/*
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
-		return new ILiquidTank[] { _tank };
+		return null;
+	}
+	*/
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		return new FluidTankInfo[] { _tank.getInfo() };
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		return _tank;
 	}
-	
+	*/
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound)
 	{

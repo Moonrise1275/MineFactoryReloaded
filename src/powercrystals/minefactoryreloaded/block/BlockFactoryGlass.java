@@ -54,7 +54,7 @@ public class BlockFactoryGlass extends BlockGlass implements IConnectableRedNet
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		_texture = ir.registerIcon("powercrystals/minefactoryreloaded/tile.mfr.stainedglass");
+		_texture = ir.registerIcon("minefactoryreloaded:tile.mfr.stainedglass");
 	}
 
 	@Override

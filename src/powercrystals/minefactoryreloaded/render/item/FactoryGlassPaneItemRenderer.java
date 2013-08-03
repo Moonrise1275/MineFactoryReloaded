@@ -11,14 +11,18 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderEngine;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 public class FactoryGlassPaneItemRenderer implements IItemRenderer
 {
+	private static final ResourceLocation ENCHANTED_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
@@ -35,7 +39,7 @@ public class FactoryGlassPaneItemRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		RenderEngine renderEngine = Minecraft.getMinecraft().renderEngine;
+		TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 		RenderBlocks renderer = (RenderBlocks)data[0];
 
 		BlockFactoryGlassPane pane = (BlockFactoryGlassPane)Block.blocksList[((ItemBlock)item.getItem()).getBlockID()];
@@ -56,12 +60,12 @@ public class FactoryGlassPaneItemRenderer implements IItemRenderer
 			GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
 			GL11.glScalef(1 / 16f, 1 / 16f, 1 / 16f);
 
-			if (item.hasEffect())
+			if (item.hasEffect(0))
 			{
 				GL11.glEnable(GL11.GL_CULL_FACE);
 				GL11.glDepthFunc(GL11.GL_GREATER);
 				GL11.glDepthMask(false);
-				renderEngine.bindTexture("%blur%/misc/glint.png");
+				renderEngine.func_110577_a(ENCHANTED_ITEM_GLINT);
 				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
 				GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);

@@ -3,7 +3,7 @@ package powercrystals.minefactoryreloaded.block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -12,25 +12,27 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquid;
-import powercrystals.core.block.BlockFluidClassic;
+import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fluids.Fluid;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.api.rednet.IConnectableRedNet;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockFactoryFluid extends BlockFluidClassic implements ILiquid, IConnectableRedNet
+public class BlockFactoryFluid extends BlockFluidClassic implements IConnectableRedNet
 {
 	private Icon _iconFlowing;
 	private Icon _iconStill;
+	private Fluid _fluid;
 	
-	public BlockFactoryFluid(int id, String liquidName)
+	public BlockFactoryFluid(int id, Fluid fluid, String name)
 	{
-		super(id, Material.water);
-		setUnlocalizedName("mfr.liquid." + liquidName + ".still");
-		setHardness(100.0F);
-		setLightOpacity(3);
+		super(id, fluid, Material.water);
+		setUnlocalizedName("mfr.liquid." + name + ".still");
+		_fluid = fluid;
+		//setHardness(100.0F);
+		//setLightOpacity(3);
 	}
 	
 	@Override
@@ -41,9 +43,9 @@ public class BlockFactoryFluid extends BlockFluidClassic implements ILiquid, ICo
 			return;
 		}
 		
-		if(entity instanceof EntityPlayer || entity instanceof EntityMob && !((EntityLiving)entity).isEntityUndead())
+		if(entity instanceof EntityPlayer || entity instanceof EntityMob && !((EntityLivingBase)entity).isEntityUndead())
 		{
-			EntityLiving ent = (EntityLiving)entity;
+			EntityLivingBase ent = (EntityLivingBase)entity;
 			if(blockID == MineFactoryReloadedCore.sludgeLiquid.blockID)
 			{
 				ent.addPotionEffect(new PotionEffect(Potion.poison.id, 12 * 20, 0));
@@ -71,7 +73,7 @@ public class BlockFactoryFluid extends BlockFluidClassic implements ILiquid, ICo
 		}
 		super.onEntityCollidedWithBlock(world, x, y, z, entity);
 	}
-	
+	/*
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
@@ -115,13 +117,14 @@ public class BlockFactoryFluid extends BlockFluidClassic implements ILiquid, ICo
 	{
 		return 0;
 	}
-	
+	*/
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IconRegister ir)
 	{
-		_iconStill = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
-		_iconFlowing = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName().replace(".still", ".flowing"));
+		_iconStill = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
+		_iconFlowing = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName().replace(".still", ".flowing"));
+		_fluid.setIcons(_iconStill, _iconFlowing);
 	}
 	
 	@Override

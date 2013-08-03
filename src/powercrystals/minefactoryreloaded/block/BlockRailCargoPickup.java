@@ -73,6 +73,6 @@ public class BlockRailCargoPickup extends BlockRailBase
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		blockIcon = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
+		blockIcon = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
 	}
 }

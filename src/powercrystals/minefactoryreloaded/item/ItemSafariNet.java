@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -97,10 +98,10 @@ public class ItemSafariNet extends ItemFactory
 	@Override
 	public void registerIcons(IconRegister ir)
 	{
-		_iconEmpty = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".empty");
-		_iconBack = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".back");
-		_iconMid = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".mid");
-		_iconFront = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName() + ".front");
+		_iconEmpty = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".empty");
+		_iconBack = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".back");
+		_iconMid = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".mid");
+		_iconFront = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName() + ".front");
 		
 		itemIcon = _iconEmpty;
 	}
@@ -216,7 +217,7 @@ public class ItemSafariNet extends ItemFactory
 					itemstack.itemID == MineFactoryReloadedCore.safariNetJailerItem.itemID &&
 					itemstack.hasDisplayName())
 			{
-				((EntityLiving)spawnedCreature).func_94058_c(itemstack.getDisplayName());
+				((EntityLiving)spawnedCreature).setCustomNameTag(itemstack.getDisplayName());
 			}
 			
 			if(isSingleUse(itemstack))
@@ -262,7 +263,7 @@ public class ItemSafariNet extends ItemFactory
 			{
 				if(e instanceof EntityLiving)
 				{
-					((EntityLiving)e).initCreature();
+					((EntityLiving)e).func_110161_a(null);
 				}
 				
 				e.readFromNBT(mobTag);
@@ -316,10 +317,10 @@ public class ItemSafariNet extends ItemFactory
 		{
 			Entity e = EntityList.createEntityByID(mobId, world);
 			
-			if (e != null)
+			if (e instanceof EntityLiving)
 			{
 				e.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
-				((EntityLiving)e).initCreature();
+				((EntityLiving)e).func_110161_a(null);
 				world.spawnEntityInWorld(e);
 				((EntityLiving)e).playLivingSound();
 			}
@@ -327,14 +328,14 @@ public class ItemSafariNet extends ItemFactory
 			return e;
 		}
 	}
-	
+	// itemInteractionForEntity
 	@Override
-	public boolean itemInteractionForEntity(ItemStack itemstack, EntityLiving entity)
+	public boolean func_111207_a(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity)
 	{
 		return captureEntity(itemstack, entity);
 	}
 	
-	public static boolean captureEntity(ItemStack itemstack, EntityLiving entity)
+	public static boolean captureEntity(ItemStack itemstack, EntityLivingBase entity)
 	{
 		if(entity.worldObj.isRemote)
 		{

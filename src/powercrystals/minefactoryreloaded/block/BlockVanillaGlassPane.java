@@ -49,6 +49,6 @@ public class BlockVanillaGlassPane extends BlockFactoryGlassPane
 	public void registerIcons(IconRegister ir)
 	{
 		_iconPane = ir.registerIcon("glass");
-		_iconSide = ir.registerIcon("thinglass_top");
+		_iconSide = ir.registerIcon("glass_pane_top");
 	}
 }

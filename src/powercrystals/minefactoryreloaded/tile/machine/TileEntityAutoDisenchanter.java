@@ -167,7 +167,7 @@ public class TileEntityAutoDisenchanter extends TileEntityFactoryPowered
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
 		if(slot == 0)
 		{

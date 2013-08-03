@@ -335,12 +335,12 @@ public class FarmingRegistry
 	}
 
 	/**
-	 * Registers a handler for drinking liquids with the straw.
+	 * Registers a handler for drinking fluids with the straw.
 	 * 
-	 * @param liquidId The block ID the handler handles.
+	 * @param fluidID The block ID the handler handles.
 	 * @param liquidDrinkHandler The drink handler instance.
 	 */
-	public static void registerLiquidDrinkHandler(int liquidId, ILiquidDrinkHandler liquidDrinkHandler)
+	public static void registerLiquidDrinkHandler(int fluidID, ILiquidDrinkHandler liquidDrinkHandler)
 	{
 		try
 		{
@@ -348,7 +348,7 @@ public class FarmingRegistry
 			if(registry != null)
 			{
 				Method reg = registry.getMethod("registerLiquidDrinkHandler", int.class, ILiquidDrinkHandler.class);
-				reg.invoke(registry, liquidId, liquidDrinkHandler);
+				reg.invoke(registry, fluidID, liquidDrinkHandler);
 			}
 		}
 		catch(Exception e)

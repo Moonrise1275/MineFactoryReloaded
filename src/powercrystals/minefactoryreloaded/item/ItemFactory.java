@@ -29,7 +29,7 @@ public class ItemFactory extends Item
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
+		this.itemIcon = par1IconRegister.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

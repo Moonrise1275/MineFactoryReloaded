@@ -3,6 +3,7 @@ package powercrystals.minefactoryreloaded.core;
 import java.util.ArrayList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -55,7 +56,7 @@ public class MFRUtil
 			Entity e = entity.getConstructor(new Class[] {World.class}).newInstance(new Object[] { world });
 			if(e instanceof EntityLiving)
 			{
-				((EntityLiving)e).initCreature();
+				((EntityLiving)e).func_110161_a(null);
 			}
 			return e;
 		}

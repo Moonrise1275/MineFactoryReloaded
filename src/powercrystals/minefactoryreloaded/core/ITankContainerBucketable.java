@@ -1,6 +1,6 @@
 package powercrystals.minefactoryreloaded.core;
 
-import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.fluids.IFluidHandler;
 /**
  * @author Emy
  *
@@ -8,7 +8,7 @@ import net.minecraftforge.liquids.ITankContainer;
  * 
  * what am I even doing here
  */
-public interface ITankContainerBucketable extends ITankContainer
+public interface ITankContainerBucketable extends IFluidHandler
 {
 	/**
 	 * Called to determine if the ITankContainer should be filled by buckets.

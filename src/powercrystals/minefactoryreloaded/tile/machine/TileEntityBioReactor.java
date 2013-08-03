@@ -4,11 +4,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import powercrystals.core.util.Util;
 import powercrystals.core.util.UtilInventory;
 import powercrystals.minefactoryreloaded.MFRRegistry;
@@ -23,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityBioReactor extends TileEntityFactoryInventory implements ITankContainerBucketable
 {
-	private LiquidTank _tank;
+	private FluidTank _tank;
 	private int _burnTime;
 	private static final int _burnTimeMax = 8000;
 	private static final int _bioFuelPerTick = 1;
@@ -35,7 +36,7 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 	public TileEntityBioReactor()
 	{
 		super(Machine.BioReactor);
-		_tank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 4);
+		_tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 4);
 	}
 	
 	public int getBurnTime()
@@ -123,10 +124,10 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 				}
 			}
 			
-			if(_burnTime > 0 && (_tank.getLiquid() == null || _tank.getLiquid().amount <= _tank.getCapacity() - _bioFuelPerTick))
+			if(_burnTime > 0 && (_tank.getFluid() == null || _tank.getFluid().amount <= _tank.getCapacity() - _bioFuelPerTick))
 			{
 				_burnTime -= _burnTimeDecreasePerTick;
-				_tank.fill(LiquidDictionary.getLiquid("biofuel", _bioFuelPerTick), true);
+				_tank.fill(FluidRegistry.getFluidStack("biofuel", _bioFuelPerTick), true);
 			}
 		}
 	}
@@ -175,7 +176,7 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 	}
 	
 	@Override
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return _tank;
 	}
@@ -205,15 +206,21 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
-	
+	/*
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
 	{
 		return 0;
+	}
+	*/
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
@@ -223,29 +230,41 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 	}
 	
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
 	{
 		return null;
 	}
 	
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
-	
+	/*
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
-		return new ILiquidTank[] { _tank };
+		return null;
+	}
+	*/
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		return new FluidTankInfo[] { _tank.getInfo() };
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		return _tank;
 	}
-	
+	*/
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound)
 	{
@@ -261,7 +280,7 @@ public class TileEntityBioReactor extends TileEntityFactoryInventory implements 
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
 		if(itemstack == null)
 		{

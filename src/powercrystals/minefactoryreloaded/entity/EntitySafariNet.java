@@ -3,6 +3,7 @@ package powercrystals.minefactoryreloaded.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public class EntitySafariNet extends EntityThrowable
 		dataWatcher.addObject(13, netStack);
 	}
 	
-	public EntitySafariNet(World world, EntityLiving owner, ItemStack netStack)
+	public EntitySafariNet(World world, EntityLivingBase owner, ItemStack netStack)
 	{
 		super(world, owner);
 		dataWatcher.addObject(13, netStack);
@@ -65,9 +66,9 @@ public class EntitySafariNet extends EntityThrowable
 		}
 		else
 		{
-			if(ItemSafariNet.isEmpty(storedEntity) && mop.entityHit instanceof EntityLiving)
+			if(ItemSafariNet.isEmpty(storedEntity) && mop.entityHit instanceof EntityLivingBase)
 			{
-				ItemSafariNet.captureEntity(storedEntity, (EntityLiving)mop.entityHit);
+				ItemSafariNet.captureEntity(storedEntity, (EntityLivingBase)mop.entityHit);
 				dropAsStack(storedEntity);
 			}
 			else
@@ -80,7 +81,7 @@ public class EntitySafariNet extends EntityThrowable
 						if(releasedEntity instanceof EntityLiving)
 						{
 							//Functional for skeletons.
-							((EntityLiving)releasedEntity).setAttackTarget((EntityLiving)mop.entityHit);
+							((EntityLiving)releasedEntity).setAttackTarget((EntityLivingBase)mop.entityHit);
 						}
 						
 						if(releasedEntity instanceof EntityCreature)

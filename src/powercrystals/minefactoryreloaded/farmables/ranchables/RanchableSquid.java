@@ -1,9 +1,9 @@
 package powercrystals.minefactoryreloaded.farmables.ranchables;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -20,9 +20,9 @@ public class RanchableSquid implements IFactoryRanchable
 	}
 	
 	@Override
-	public List<ItemStack> ranch(World world, EntityLiving entity, IInventory rancher)
+	public List<Object> ranch(World world, EntityLivingBase entity, IInventory rancher)
 	{
-		List<ItemStack> drops = new ArrayList<ItemStack>();
+		List<Object> drops = new LinkedList<Object>();
 		drops.add(new ItemStack(Item.dyePowder, 1, 0));
 		return drops;
 	}

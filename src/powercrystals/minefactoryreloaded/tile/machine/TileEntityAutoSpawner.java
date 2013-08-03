@@ -8,11 +8,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import powercrystals.minefactoryreloaded.MFRRegistry;
 import powercrystals.minefactoryreloaded.core.ITankContainerBucketable;
 import powercrystals.minefactoryreloaded.gui.client.GuiAutoSpawner;
@@ -28,13 +29,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements ITankContainerBucketable
 {
 	private static final int _spawnRange = 4;
-	private LiquidTank _tank;
+	private FluidTank _tank;
 	private boolean _spawnExact = false;
 	
 	public TileEntityAutoSpawner()
 	{
 		super(Machine.AutoSpawner);
-		_tank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 4);
+		_tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 4);
 	}
 	
 	public boolean getSpawnExact()
@@ -76,7 +77,7 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 	protected boolean activateMachine()
 	{
 		ItemStack item = getStackInSlot(0);
-		if(!isStackValidForSlot(0, item))
+		if(!isItemValidForSlot(0, item))
 		{
 			setWorkDone(0);
 			return false;
@@ -108,9 +109,9 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 		}
 		if(getWorkDone() < getWorkMax())
 		{
-			if(_tank.getLiquid() != null && _tank.getLiquid().amount >= 10)
+			if(_tank.getFluid() != null && _tank.getFluid().amount >= 10)
 			{
-				_tank.getLiquid().amount -= 10;
+				_tank.getFluid().amount -= 10;
 				setWorkDone(getWorkDone() + 1);
 				return true;
 			}
@@ -136,7 +137,7 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 				spawnedLiving.readEntityFromNBT(tag);
 				for (int i = 0; i < 5; ++i)
 				{
-					spawnedLiving.func_96120_a(i, 0);
+					spawnedLiving.setEquipmentDropChance(i, 0);
 				}
 			}
 			
@@ -155,7 +156,7 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 			
 			if (!_spawnExact)
 			{
-				spawnedLiving.initCreature();
+				spawnedLiving.func_110161_a(null);
 			}
 			
 			worldObj.spawnEntityInWorld(spawnedLiving);
@@ -186,25 +187,31 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 	}
 	
 	@Override
-	public ILiquidTank getTank()
+	public FluidTank getTank()
 	{
 		return _tank;
 	}
 	
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource == null || resource.itemID != LiquidDictionary.getLiquid("mobEssence", 1000).itemID)
+		if(resource == null || resource.fluidID != FluidRegistry.getFluidID("mobessence"))
 		{
 			return 0;
 		}
 		return _tank.fill(resource, doFill);
 	}
-	
+	/*
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	public int fill(int tankIndex, FluidStack resource, boolean doFill)
 	{
 		return fill(ForgeDirection.UNKNOWN, resource, doFill);
+	}
+	*/
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid)
+	{
+		return true;
 	}
 	
 	@Override
@@ -214,37 +221,49 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 	}
 	
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
 	{
 		return null;
 	}
 	
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
-	
+	/*
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
 	{
-		return new ILiquidTank[] { _tank };
+		return null;
+	}
+	*/
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	{
+		return false;
 	}
 	
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	{
+		return new FluidTankInfo[] { _tank.getInfo() };
+	}
+	/*
+	@Override
+	public FluidTank getTank(ForgeDirection direction, FluidStack type)
 	{
 		return _tank;
 	}
-	
+	*/
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{
-		return isStackValidForSlot(slot, itemstack);
+		return isItemValidForSlot(slot, itemstack);
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return ItemSafariNet.isSafariNet(itemstack) &&
 				!ItemSafariNet.isSingleUse(itemstack) &&

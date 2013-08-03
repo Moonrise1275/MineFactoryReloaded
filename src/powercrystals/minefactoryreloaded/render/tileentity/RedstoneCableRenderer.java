@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -15,6 +16,8 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class RedstoneCableRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler
 {
+	private static final ResourceLocation CABLE = MineFactoryReloadedCore.getTileEntityTexture("cable.png");
+	
 	private RedstoneCableModel _model;
 	
 	public RedstoneCableRenderer()
@@ -26,7 +29,7 @@ public class RedstoneCableRenderer extends TileEntitySpecialRenderer implements 
 	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float scale)
 	{
 		TileEntityRedNetCable cable = (TileEntityRedNetCable)tileentity;
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "cable.png");
+		func_110628_a(CABLE);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5f, (float) z + 0.5F);
 		
@@ -40,7 +43,7 @@ public class RedstoneCableRenderer extends TileEntitySpecialRenderer implements 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		bindTextureByName(MineFactoryReloadedCore.tileEntityFolder + "cable.png");
+		func_110628_a(CABLE);
 		
 		GL11.glPushMatrix();
 		GL11.glRotatef(90, 0, 1, 0);

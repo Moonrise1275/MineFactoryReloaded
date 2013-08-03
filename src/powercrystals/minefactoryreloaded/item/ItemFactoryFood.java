@@ -16,6 +16,6 @@ public class ItemFactoryFood extends ItemFood
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir)
 	{
-		itemIcon = ir.registerIcon("powercrystals/minefactoryreloaded/" + getUnlocalizedName());
+		itemIcon = ir.registerIcon("minefactoryreloaded:" + getUnlocalizedName());
 	}
 }
