@@ -65,6 +65,12 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	}
 	
 	@Override
+	public int getSizeInventory()
+	{
+		return 1;
+	}
+	
+	@Override
 	public String getGuiBackground()
 	{
 		return "harvester.png";
@@ -313,13 +319,7 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	{
 		return true;
 	}
-	/*
-	@Override
-	public int fill(int tankIndex, FluidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-	*/
+	
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack fluid, boolean doDrain)
 	{
@@ -331,13 +331,7 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	{
 		return null;
 	}
-	/*
-	@Override
-	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-	*/
+	
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
@@ -349,13 +343,7 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	{
 		return new FluidTankInfo[] { _tank.getInfo() };
 	}
-	/*
-	@Override
-	public FluidTank getTank(ForgeDirection direction, FluidStack type)
-	{
-		return _tank;
-	}
-	*/
+	
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound)
 	{
@@ -387,27 +375,21 @@ public class TileEntityHarvester extends TileEntityFactoryPowered implements ITa
 	}
 	
 	@Override
-	public int getSizeInventory()
+	public ConnectType canConnectItemPipe(ForgeDirection with)
 	{
-		return 1;
+		return ConnectType.CONNECT;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	{
+		return false;
 	}
 	
 	@Override
 	public boolean manageSolids()
 	{
 		return true;
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side)
-	{
-		return 0;
-	}
-	
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 0;
 	}
 	
 	@Override

@@ -5,7 +5,7 @@ import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -16,7 +16,7 @@ public class Mystcraft
 {
 	private static final String lastUpdated = "for Mystcraft-uni-1.5.1-0.10.3.00, current release as of May 25 2013";
 	
-	@Init
+	@EventHandler
 	@SuppressWarnings("rawtypes")
 	public static void load(FMLInitializationEvent e)
 	{

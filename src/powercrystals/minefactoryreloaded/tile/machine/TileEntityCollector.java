@@ -39,12 +39,6 @@ public class TileEntityCollector extends TileEntityFactoryInventory
 	}
 	
 	@Override
-	public int getSizeInventory()
-	{
-		return 0;
-	}
-	
-	@Override
 	public boolean manageSolids()
 	{
 		return true;

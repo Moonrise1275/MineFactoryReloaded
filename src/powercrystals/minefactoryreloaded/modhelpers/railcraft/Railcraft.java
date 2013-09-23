@@ -10,7 +10,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -22,7 +22,7 @@ import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 @NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class Railcraft {
 
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent evt) {
 		if (!Loader.isModLoaded("Railcraft"))
 		{

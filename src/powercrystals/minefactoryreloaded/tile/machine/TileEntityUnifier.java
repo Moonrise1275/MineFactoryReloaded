@@ -184,12 +184,6 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	}
 	
 	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 11;
-	}
-	
-	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int sideordinal)
 	{
 		if(slot == 0) return true;
@@ -265,13 +259,7 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 		
 		return null;
 	}
-	/*
-	@Override
-	public int fill(int tankIndex, FluidStack resource, boolean doFill)
-	{
-		return fill(ForgeDirection.UNKNOWN, resource, doFill);
-	}
-	*/
+	
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
@@ -297,13 +285,7 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	{
 		return _tank.drain(maxDrain, doDrain);
 	}
-	/*
-	@Override
-	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return _tank.drain(maxDrain, doDrain);
-	}
-	*/
+	
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
@@ -315,11 +297,4 @@ public class TileEntityUnifier extends TileEntityFactoryInventory implements ITa
 	{
 		return new FluidTankInfo[] { _tank.getInfo() };
 	}
-	/*
-	@Override
-	public FluidTank getTank(ForgeDirection direction, FluidStack type)
-	{
-		return _tank;
-	}
-	*/
 }

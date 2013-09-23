@@ -119,6 +119,18 @@ public class TileEntityFisher extends TileEntityFactoryPowered implements IHarve
 	}
 	
 	@Override
+	public ConnectType canConnectItemPipe(ForgeDirection with)
+	{
+		return ConnectType.CONNECT;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	{
+		return false;
+	}
+	
+	@Override
 	public boolean manageSolids()
 	{
 		return true;

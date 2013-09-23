@@ -3,7 +3,6 @@ package powercrystals.minefactoryreloaded.tile.base;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import powercrystals.core.position.BlockPosition;
-//import powercrystals.core.power.PowerProviderAdvanced;
 import powercrystals.minefactoryreloaded.setup.Machine;
 //import buildcraft.api.power.IPowerProvider;
 //import buildcraft.api.power.IPowerReceptor;

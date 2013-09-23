@@ -201,17 +201,11 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 		}
 		return _tank.fill(resource, doFill);
 	}
-	/*
-	@Override
-	public int fill(int tankIndex, FluidStack resource, boolean doFill)
-	{
-		return fill(ForgeDirection.UNKNOWN, resource, doFill);
-	}
-	*/
+
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return fluid != null && fluid.getName().equals("mobessence");
 	}
 	
 	@Override
@@ -231,13 +225,7 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 	{
 		return null;
 	}
-	/*
-	@Override
-	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-	*/
+
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
@@ -249,13 +237,7 @@ public class TileEntityAutoSpawner extends TileEntityFactoryPowered implements I
 	{
 		return new FluidTankInfo[] { _tank.getInfo() };
 	}
-	/*
-	@Override
-	public FluidTank getTank(ForgeDirection direction, FluidStack type)
-	{
-		return _tank;
-	}
-	*/
+
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{

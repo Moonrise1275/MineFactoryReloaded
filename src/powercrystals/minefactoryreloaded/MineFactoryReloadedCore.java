@@ -21,13 +21,13 @@ import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
-
 import powercrystals.core.mod.BaseMod;
 import powercrystals.core.updater.UpdateManager;
 import powercrystals.minefactoryreloaded.block.BlockConveyor;
@@ -64,6 +64,7 @@ import powercrystals.minefactoryreloaded.block.ItemBlockRedNetLogic;
 import powercrystals.minefactoryreloaded.block.ItemBlockRedNetPanel;
 import powercrystals.minefactoryreloaded.block.ItemBlockVanillaIce;
 import powercrystals.minefactoryreloaded.block.ItemBlockVineScaffold;
+import powercrystals.minefactoryreloaded.core.GrindingDamage;
 import powercrystals.minefactoryreloaded.entity.EntityNeedle;
 import powercrystals.minefactoryreloaded.entity.EntityPinkSlime;
 import powercrystals.minefactoryreloaded.entity.EntityRocket;
@@ -107,17 +108,17 @@ import powercrystals.minefactoryreloaded.setup.BehaviorDispenseSafariNet;
 import powercrystals.minefactoryreloaded.setup.MFRConfig;
 import powercrystals.minefactoryreloaded.setup.MineFactoryReloadedFuelHandler;
 import powercrystals.minefactoryreloaded.setup.MineFactoryReloadedWorldGen;
-//import powercrystals.minefactoryreloaded.setup.recipe.GregTech;
+import powercrystals.minefactoryreloaded.setup.recipe.GregTech;
 //import powercrystals.minefactoryreloaded.setup.recipe.ThermalExpansion;
 import powercrystals.minefactoryreloaded.setup.recipe.Vanilla;
 import powercrystals.minefactoryreloaded.setup.village.VillageCreationHandler;
 import powercrystals.minefactoryreloaded.setup.village.VillageTradeHandler;
 import powercrystals.minefactoryreloaded.tile.conveyor.TileEntityConveyor;
+import powercrystals.minefactoryreloaded.tile.machine.TileEntityGrinder;
 import powercrystals.minefactoryreloaded.tile.machine.TileEntityUnifier;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetHistorian;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetLogic;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetCable;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -531,7 +532,6 @@ public class MineFactoryReloadedCore extends BaseMod
 		
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageCreationHandler());
 		VillagerRegistry.instance().registerVillagerId(MFRConfig.zoolologistEntityId.getInt());
-		VillagerRegistry.instance().registerVillagerSkin(MFRConfig.zoolologistEntityId.getInt(), getVillagerTexture("zoologist.png"));
 		VillagerRegistry.instance().registerVillageTradeHandler(MFRConfig.zoolologistEntityId.getInt(), new VillageTradeHandler());
 		
 		GameRegistry.registerWorldGenerator(new MineFactoryReloadedWorldGen());
@@ -574,12 +574,11 @@ public class MineFactoryReloadedCore extends BaseMod
 		{
 			new ThermalExpansion().registerRecipes();
 		}
-		
+		*/
 		if(MFRConfig.gregTechRecipes.getBoolean(false))
 		{
 			new GregTech().registerRecipes();
 		}
-		*/
 		/*
 		for(int i = 0; i < 14; i++)
 		{
@@ -595,6 +594,23 @@ public class MineFactoryReloadedCore extends BaseMod
 		FacadeManager.addFacade(new ItemStack(factoryRoadBlock.blockID, 1, 1));
 		FacadeManager.addFacade(new ItemStack(factoryRoadBlock.blockID, 1, 4));
 		*/
+	}
+	
+	@ForgeSubscribe
+	public void onLivindDrops(LivingDropsEvent e)
+	{
+		if (e.source instanceof GrindingDamage)
+		{
+			GrindingDamage source = (GrindingDamage)e.source;
+			TileEntityGrinder grinder = source.grinder;
+			
+			if (grinder == null)
+				return;
+			
+			grinder.dropsEntity(e.entityLiving, e.drops);
+			
+			e.setCanceled(true);
+		}
 	}
 	
 	@ForgeSubscribe

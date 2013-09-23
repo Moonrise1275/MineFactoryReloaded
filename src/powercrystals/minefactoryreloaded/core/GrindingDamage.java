@@ -2,6 +2,7 @@ package powercrystals.minefactoryreloaded.core;
 
 import java.util.Random;
 
+import powercrystals.minefactoryreloaded.tile.machine.TileEntityGrinder;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.DamageSource;
@@ -9,21 +10,24 @@ import net.minecraft.util.StatCollector;
 
 public class GrindingDamage extends DamageSource
 {
+	public TileEntityGrinder grinder;
 	protected int _msgCount;
 	protected Random _rand;
-	public GrindingDamage()
+	
+	public GrindingDamage(TileEntityGrinder source)
 	{
-		this(null, 1);
+		this(source, null, 1);
 	}
 	
-	public GrindingDamage(String type)
+	public GrindingDamage(TileEntityGrinder source, String type)
 	{
-		this(type, 1);
+		this(source, type, 1);
 	}
 	
-	public GrindingDamage(String type, int deathMessages)
+	public GrindingDamage(TileEntityGrinder source, String type, int deathMessages)
 	{
 		super(type == null ? "mfr.grinder" : type);
+		grinder = source;
 		setDamageBypassesArmor();
 		setDamageAllowedInCreativeMode();
 		_msgCount = Math.max(deathMessages, 1);

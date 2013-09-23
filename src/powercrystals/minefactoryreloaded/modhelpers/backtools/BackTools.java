@@ -5,7 +5,7 @@ import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -20,7 +20,7 @@ public class BackTools
 	private static final String lastUpdated = "for Back Tools 1.5.1v2, current release as of May 20 2013";
 	
 	@SuppressWarnings({"rawtypes","unchecked"})
-	@Init
+	@EventHandler
 	public static void load(FMLInitializationEvent e)
 	{
 		if(!Loader.isModLoaded("mod_BackTools"))

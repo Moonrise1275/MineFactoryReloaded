@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ public class GrindableChocobo implements IFactoryGrindable2
 	}
 
 	@Override
-	public List<MobDrop> grind(World world, EntityLiving entity, Random random)
+	public List<MobDrop> grind(World world, EntityLivingBase entity, Random random)
 	{
 		List<MobDrop> items = new ArrayList<MobDrop>();
 
@@ -41,7 +41,7 @@ public class GrindableChocobo implements IFactoryGrindable2
 	}
 
 	@Override
-	public boolean processEntity(EntityLiving entity)
+	public boolean processEntity(EntityLivingBase entity)
 	{
 		return true;
 	}

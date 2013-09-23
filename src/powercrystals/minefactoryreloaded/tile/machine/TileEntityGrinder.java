@@ -13,6 +13,7 @@ import java.util.Random;
 
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
@@ -25,10 +26,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-
 import powercrystals.minefactoryreloaded.MFRRegistry;
-import powercrystals.minefactoryreloaded.api.IFactoryGrindable2;
-import powercrystals.minefactoryreloaded.api.MobDrop;
 import powercrystals.minefactoryreloaded.core.GrindingDamage;
 import powercrystals.minefactoryreloaded.core.HarvestAreaManager;
 import powercrystals.minefactoryreloaded.core.IHarvestAreaContainer;
@@ -38,9 +36,6 @@ import powercrystals.minefactoryreloaded.gui.client.GuiFactoryPowered;
 import powercrystals.minefactoryreloaded.gui.container.ContainerFactoryPowered;
 import powercrystals.minefactoryreloaded.setup.Machine;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryPowered;
-//import powercrystals.minefactoryreloaded.world.GrindingWorld;
-//import powercrystals.minefactoryreloaded.world.GrindingWorldServer;
-//import powercrystals.minefactoryreloaded.world.IGrindingWorld;
 
 public class TileEntityGrinder extends TileEntityFactoryPowered implements ITankContainerBucketable, IHarvestAreaContainer
 {
@@ -58,7 +53,6 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	protected HarvestAreaManager _areaManager;
 	protected FluidTank _tank;
 	protected Random _rand;
-	//protected IGrindingWorld _grindingWorld;
 	protected GrindingDamage _damageSource;
 	
 	protected TileEntityGrinder(Machine machine)
@@ -72,7 +66,7 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	public TileEntityGrinder()
 	{
 		this(Machine.Grinder);
-		_damageSource = new GrindingDamage();
+		_damageSource = new GrindingDamage(this);
 	}
 	
 	@Override
@@ -93,18 +87,7 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	{
 		return new ContainerFactoryPowered(this, inventoryPlayer);
 	}
-	/*
-	@Override
-	public void setWorldObj(World world)
-	{
-		super.setWorldObj(world);
-		if(_grindingWorld != null) _grindingWorld.clearReferences();
-		if(this.worldObj instanceof WorldServer)
-			_grindingWorld = new GrindingWorldServer((WorldServer)this.worldObj, this);
-		else
-			_grindingWorld = new GrindingWorld(this.worldObj, this);
-	}
-	*/
+
 	public Random getRandom()
 	{
 		return _rand;
@@ -149,78 +132,24 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	@Override
 	public boolean activateMachine()
 	{
-		//_grindingWorld.cleanReferences();
 		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _areaManager.getHarvestArea().toAxisAlignedBB());
 		
 		entityList: for(Object o : entities)
 		{
 			EntityLivingBase e = (EntityLivingBase)o;
-			if(e instanceof EntityAgeable && ((EntityAgeable)e).getGrowingAge() < 0 || e.isEntityInvulnerable() || e.func_110143_aJ() <= 0)
+			if(e.isChild() || e.isEntityInvulnerable() || e.func_110143_aJ() <= 0)
 			{
 				continue;
 			}
-			boolean processMob = false;
-			processEntity:
+
+			for(Class<?> t : MFRRegistry.getGrinderBlacklist())
 			{
-				if(MFRRegistry.getGrindables27().containsKey(e.getClass()))
-				{
-					IFactoryGrindable2 r = MFRRegistry.getGrindables27().get(e.getClass());
-					List<MobDrop> drops = r.grind(e.worldObj, e, getRandom());
-					if(drops != null && drops.size() > 0 && WeightedRandom.getTotalWeight(drops) > 0)
-					{
-						ItemStack drop = ((MobDrop)WeightedRandom.getRandomItem(_rand, drops)).getStack();
-						doDrop(drop);
-					}
-					if(r instanceof IFactoryGrindable2)
-					{
-						if(((IFactoryGrindable2)r).processEntity(e))
-						{
-							processMob = true;
-							if(e.func_110143_aJ() <= 0)
-							{
-								continue entityList;
-							}
-							break processEntity;
-						}
-					}
-					else
-					{
-						processMob = true;
-						break processEntity;
-					}
-				}
-				for(Class<?> t : MFRRegistry.getGrinderBlacklist())
-				{
-					if(t.isInstance(e))
-					{
-						continue entityList;
-					}
-				}
-				/*
-				if(!_grindingWorld.addEntityForGrinding(e))
+				if(t.isInstance(e))
 				{
 					continue entityList;
 				}
-				*/
 			}
-			if(processMob && e.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot"))
-			{
-				try
-				{
-					e.worldObj.getGameRules().setOrCreateGameRule("doMobLoot", "false");
-					damageEntity(e);
-					if(e.func_110143_aJ() <= 0)
-					{
-						_tank.fill(FluidRegistry.getFluidStack("mobessence", 100), true);
-					}
-				}
-				finally
-				{
-					e.worldObj.getGameRules().setOrCreateGameRule("doMobLoot", "true");
-					setIdleTicks(20);
-				}
-				return true;
-			}
+			
 			damageEntity(e);
 			if(e.func_110143_aJ() <= 0)
 			{
@@ -254,10 +183,13 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 		entity.attackEntityFrom(_damageSource, DAMAGE);
 	}
 	
-	@Override
-	public int getSizeInventory()
+	public void dropsEntity(EntityLivingBase entity, ArrayList<EntityItem> drops)
 	{
-		return 0;
+		setRecentlyHit(entity, 0);
+		for (EntityItem item: drops)
+		{
+			doDrop(item.getEntityItem());
+		}
 	}
 	
 	@Override
@@ -265,17 +197,11 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	{
 		return 0;
 	}
-	/*
-	@Override
-	public int fill(int tankIndex, FluidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-	*/
+
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return false;
 	}
 	
 	@Override
@@ -295,13 +221,7 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	{
 		return null;
 	}
-	/*
-	@Override
-	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-	*/
+
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
@@ -313,13 +233,19 @@ public class TileEntityGrinder extends TileEntityFactoryPowered implements ITank
 	{
 		return new FluidTankInfo[] { _tank.getInfo() };
 	}
-	/*
+	
 	@Override
-	public FluidTank getTank(ForgeDirection direction, FluidStack type)
+	public ConnectType canConnectItemPipe(ForgeDirection with)
 	{
-		return _tank;
+		return ConnectType.CONNECT;
 	}
-	*/
+	
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	{
+		return false;
+	}
+	
 	@Override
 	public boolean manageSolids()
 	{

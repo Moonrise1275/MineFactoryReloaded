@@ -3,26 +3,23 @@ package powercrystals.minefactoryreloaded.tile.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import ic2.api.Direction;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-//import powercrystals.core.power.PowerProviderAdvanced;
+import powercrystals.core.asm.relauncher.Implementable;
 import powercrystals.core.util.Util;
 import powercrystals.core.util.UtilInventory;
 import powercrystals.minefactoryreloaded.setup.Machine;
-//import universalelectricity.core.block.IConnector;
-//import universalelectricity.core.block.IVoltage;
-//import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.power.PowerHandler.Type;
+//import universalelectricity.core.block.IElectrical;
+//import universalelectricity.core.electricity.ElectricityHelper;
 //import universalelectricity.core.electricity.ElectricityPack;
-//import buildcraft.api.power.IPowerProvider;
-//import buildcraft.api.power.IPowerReceptor;
 
 /*
  * There are three pieces of information tracked - energy, work, and idle ticks.
@@ -36,16 +33,19 @@ import powercrystals.minefactoryreloaded.setup.Machine;
  * progress bar correctly.
  */
 
-public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventory implements IEnergySink
-{	
+@Implementable("ic2.api.energy.tile.IEnergySink;buildcraft.api.power.IPowerReceptor")
+public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventory
+{
+	public static boolean needModCheck = true;
+	public static boolean bcLoaded = false;
+	public static boolean ic2Loaded = false;
+	
 	public static final int energyPerEU = 4;
 	public static final int energyPerMJ = 10;
 	public static final int wPerEnergy = 7;
 	
 	private int _energyStored;
 	protected int _energyActivation;
-	
-	protected int _energyRequiredThisTick = 0;
 	
 	private int _workDone;
 	
@@ -58,20 +58,13 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	private int _failedDropTicks = 0;
 	
 	// buildcraft-related fields
-	
-	//private IPowerProvider _powerProvider;
+	private PowerHandler _powerHandler;
 	
 	// IC2-related fields
-	
 	private boolean _isAddedToIC2EnergyNet;
 	private boolean _addToNetOnNextTick;
 	
-	// UE-related fields
-	
-	//private int _ueBuffer;
-	
 	// constructors
-	
 	protected TileEntityFactoryPowered(Machine machine)
 	{
 		this(machine, machine.getActivationEnergyMJ());
@@ -80,75 +73,66 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	protected TileEntityFactoryPowered(Machine machine, int activationCostMJ)
 	{
 		super(machine);
+		if (needModCheck)
+		{
+			try
+			{
+				bcLoaded = (Class.forName("buildcraft.api.power.IPowerReceptor") != null);
+			}
+			catch (Exception e)
+			{
+				bcLoaded = false;
+			}
+			
+			try
+			{
+				ic2Loaded = (Class.forName("ic2.api.energy.tile.IEnergySink") != null);
+			}
+			catch (Exception e)
+			{
+				ic2Loaded = false;
+			}
+			needModCheck = false;
+		}
 		_energyActivation = activationCostMJ * energyPerMJ;
-		//_powerProvider = new PowerProviderAdvanced();
-		//configurePowerProvider();
+		if (bcLoaded)
+		{
+			_powerHandler = new PowerHandler((buildcraft.api.power.IPowerReceptor)this, Type.MACHINE);
+			_powerHandler.configure(0, 100, 0, 100);
+			_powerHandler.configurePowerPerdition(0, 0);
+		}
 		setIsActive(false);
 	}
 	
-	// local methods
-/*	
-	private void configurePowerProvider()
-	{ // TODO: inline into constructor in 2.8
-		int activation = getMaxEnergyPerTick() / energyPerMJ;
-		int maxReceived = Math.min(activation * 20, 1000);
-		_powerProvider.configure(0, activation < 10 ? 1 : 10, maxReceived, 1, 1000);
-	}
-*/	
 	@Override
 	public void updateEntity()
 	{
 		super.updateEntity();
-		
-		_energyStored = Math.min(_energyStored, getEnergyStoredMax());
 		
 		if(worldObj.isRemote)
 		{
 			return;
 		}
 		
-		if(_addToNetOnNextTick)
+		if(ic2Loaded && _addToNetOnNextTick)
 		{
-			if(!worldObj.isRemote)
+			try
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			}
+				Object event = Class.forName("ic2.api.energy.event.EnergyTileLoadEvent").getConstructors()[0].newInstance(this);
+				MinecraftForge.EVENT_BUS.post((net.minecraftforge.event.Event)event);
+			} catch (Throwable _) {}
 			_addToNetOnNextTick = false;
 			_isAddedToIC2EnergyNet = true;
 		}
 		
-		int energyRequired = Math.min(getEnergyStoredMax() - getEnergyStored(), getMaxEnergyPerTick());
-		/*
-		if (energyRequired > 0)
+		if(!bcLoaded && !ic2Loaded)
 		{
-			IPowerProvider pp = getPowerProvider(); 
-			bcpower: if(pp != null)
-			{
-				int mjRequired = energyRequired / energyPerMJ;
-				if (mjRequired <= 0) break bcpower;
-				
-				pp.update(this);
-				
-				if(pp.useEnergy(0, mjRequired, false) > 0)
-				{
-					int mjGained = (int)(pp.useEnergy(0, mjRequired, true) * energyPerMJ);
-					_energyStored += mjGained;
-					energyRequired -= mjGained;
-				}
-			}
-			
-			ElectricityPack powerRequested = new ElectricityPack(energyRequired * wPerEnergy / getVoltage(), getVoltage());
-			ElectricityPack powerPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, powerRequested);
-			_ueBuffer += powerPack.getWatts();
-			
-			int energyFromUE = Math.min(_ueBuffer / wPerEnergy, energyRequired);
-			_energyStored += energyFromUE;
-			energyRequired -= energyFromUE;
-			_ueBuffer -= (energyFromUE * wPerEnergy);
+			int inject = Math.min(10, getEnergyStoredMax() - getEnergyStored());
+			if (inject > 0)
+				setEnergyStored(getEnergyStored() + inject);
 		}
-		*/
-		_energyRequiredThisTick = energyRequired;
 		
+		_energyStored = Math.min(_energyStored, getEnergyStoredMax());
 		setIsActive(_energyStored >= _energyActivation * 2);
 		
 		if (failedDrops != null)
@@ -241,7 +225,7 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	public void validate()
 	{
 		super.validate();
-		if(!_isAddedToIC2EnergyNet)
+		if(ic2Loaded && !_isAddedToIC2EnergyNet)
 		{
 			_addToNetOnNextTick = true;
 		}
@@ -250,16 +234,35 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	@Override
 	public void invalidate()
 	{
-		if(_isAddedToIC2EnergyNet)
+		if(ic2Loaded && _isAddedToIC2EnergyNet)
 		{
 			if(!worldObj.isRemote)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+				try{
+					Object event = Class.forName("ic2.api.energy.event.EnergyTileUnloadEvent").getConstructors()[0].newInstance(this);
+					MinecraftForge.EVENT_BUS.post((net.minecraftforge.event.Event)event);
+				} catch (Throwable _) {}
 			}
 			_isAddedToIC2EnergyNet = false;
 		}
-		//ElectricityNetworkHelper.invalidate(this);
 		super.invalidate();
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		if(ic2Loaded && _isAddedToIC2EnergyNet)
+		{
+			if(!worldObj.isRemote)
+			{
+				try{
+					Object event = Class.forName("ic2.api.energy.event.EnergyTileUnloadEvent").getConstructors()[0].newInstance(this);
+					MinecraftForge.EVENT_BUS.post((net.minecraftforge.event.Event)event);
+				} catch (Throwable _) {}
+			}
+			_isAddedToIC2EnergyNet = false;
+		}
+		super.onChunkUnload();
 	}
 	
 	protected abstract boolean activateMachine();
@@ -268,10 +271,14 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	public void onBlockBroken()
 	{
 		super.onBlockBroken();
-		if(_isAddedToIC2EnergyNet)
+		if(ic2Loaded && _isAddedToIC2EnergyNet)
 		{
 			_isAddedToIC2EnergyNet = false;
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			try
+			{
+				Object event = Class.forName("ic2.api.energy.event.EnergyTileUnloadEvent").getConstructors()[0].newInstance(this);
+				MinecraftForge.EVENT_BUS.post((net.minecraftforge.event.Event)event);
+			} catch (Throwable _) {}
 		}
 	}
 	
@@ -323,10 +330,8 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 		
 		tag.setInteger("energyStored", _energyStored);
 		tag.setInteger("workDone", _workDone);
-		//tag.setInteger("ueBuffer", _ueBuffer);
-		//NBTTagCompound pp = new NBTTagCompound();
-		//_powerProvider.writeToNBT(pp);
-		//tag.setCompoundTag("powerProvider", pp);
+		if (bcLoaded)
+			_powerHandler.writeToNBT(tag);
 		
 		if (failedDrops != null)
 		{
@@ -348,24 +353,9 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 		
 		_energyStored = Math.min(tag.getInteger("energyStored"), getEnergyStoredMax());
 		_workDone = Math.min(tag.getInteger("workDone"), getWorkMax());
-		//_ueBuffer = tag.getInteger("ueBuffer");
-		/*
-		if (tag.hasKey("powerProvider"))
-		{
-			_powerProvider.readFromNBT(tag.getCompoundTag("powerProvider"));
-		}
-		else // TODO: remove legacy code (below) in 2.8, losses from upgrades 2.6 or below acceptable
-		{
-			_powerProvider.readFromNBT(tag);
-			configurePowerProvider();
-			tag.removeTag("latency");
-			tag.removeTag("minEnergyReceived");
-			tag.removeTag("maxEnergyReceived");
-			tag.removeTag("maxStoreEnergy");
-			tag.removeTag("minActivationEnergy");
-			tag.removeTag("storedEnergy");
-		}
-		*/
+		if (bcLoaded)
+			_powerHandler.readFromNBT(tag);
+		
 		if (tag.hasKey("DropItems"))
 		{
 			List<ItemStack> drops = new ArrayList<ItemStack>();
@@ -388,66 +378,44 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	
 	public int getEnergyRequired()
 	{
-		return Math.min(getEnergyStoredMax() - getEnergyStored(), _energyRequiredThisTick);
+		return Math.max(getEnergyStoredMax() - getEnergyStored(), 0);
 	}
 	
 	// BC methods
-	/*
-	@Override
-	public void setPowerProvider(IPowerProvider provider)
+	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		_powerProvider = provider;
+		return _powerHandler.getPowerReceiver();
+	}
+
+	public void doWork(PowerHandler workProvider)
+	{
+		float use = workProvider.useEnergy(0, (float)getEnergyRequired() / energyPerMJ, true);
+		setEnergyStored(getEnergyStored() + (int)Math.floor(use * energyPerMJ));
+	}
+
+	public World getWorld()
+	{
+		return worldObj;
 	}
 	
-	@Override
-	public IPowerProvider getPowerProvider()
-	{
-		return _powerProvider;
-	}
-	
-	@Override
-	public int powerRequest(ForgeDirection from)
-	{
-		int powerProviderPower = (int)Math.min(_powerProvider.getMaxEnergyStored() - _powerProvider.getEnergyStored(), _powerProvider.getMaxEnergyReceived());
-		return Math.max(powerProviderPower, 0);
-	}
-	
-	@Override
-	public final void doWork()
-	{
-	}
-	*/
 	// IC2 methods
-	
-	@Override
-	public int demandsEnergy()
+	public double demandedEnergyUnits()
 	{
-		return Math.max(getEnergyRequired() / energyPerEU, 0);
+		return (double)getEnergyRequired() / energyPerEU;
 	}
 	
-	@Override
-	public int injectEnergy(Direction directionFrom, int amount)
+	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
-		int euInjected = Math.max(Math.min(demandsEnergy(), amount), 0);
-		int energyInjected = euInjected * energyPerEU;
-		_energyStored += energyInjected;
-		_energyRequiredThisTick -= energyInjected;
+		int euInjected = (int)Math.max(Math.min(this.demandedEnergyUnits(), amount), 0);
+		setEnergyStored(getEnergyStored() + (euInjected * energyPerEU));
 		return amount - euInjected;
 	}
 	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		return true;
 	}
 	
-	@Override
-	public boolean isAddedToEnergyNet()
-	{
-		return _isAddedToIC2EnergyNet;
-	}
-	
-	@Override
 	public int getMaxSafeInput()
 	{
 		return 128;
@@ -455,13 +423,41 @@ public abstract class TileEntityFactoryPowered extends TileEntityFactoryInventor
 	
 	// UE Methods
 	/*
-	@Override
-	public double getVoltage()
+	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
 	{
-		return 120;
+		if (receive == null)
+			return 0;
+		
+		int require = Math.max(Math.min(getEnergyRequired(), (int)(receive.getWatts() / wPerEnergy)), 0);
+
+		if (doReceive)
+		{
+			this.setEnergyStored(this.getEnergyStored() + require);
+		}
+
+		return require * wPerEnergy;
 	}
-	
-	@Override
+
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
+	{
+		return null;
+	}
+
+	public float getRequest(ForgeDirection direction)
+	{
+		return Math.max(getEnergyRequired() * wPerEnergy, 0);
+	}
+
+	public float getProvide(ForgeDirection direction)
+	{
+		return 0;
+	}
+
+	public float getVoltage()
+	{
+		return 0.120F;
+	}
+
 	public boolean canConnect(ForgeDirection direction)
 	{
 		return true;

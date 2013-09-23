@@ -1,50 +1,19 @@
 <project name="MineFactoryReloaded" default="install" basedir=".">
-
 	<property environment="env" />
-
+	
 	<property name="build.dir" value="build" />
 	<property name="classes.dir" value="${build.dir}/packaging" />
 	<property name="apiclasses.dir" value="${build.dir}/api-packaging" />
 	<property name="src.dir" value="src" />
-	<property name="forge.buildnum" value="789" />
+
+	<property name="forge.buildnum" value="804" />
 	<property name="forge.version" value="1.6.2-9.10.0.${forge.buildnum}" />
 	<property name="forge.url" value="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${forge.version}.zip" />
 	<property name="forge.dir" value="${build.dir}/forge" />
+	
 	<property name="mcp.dir" value="${forge.dir}/mcp" />
 	<property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft" />
 	<property name="mcpbin.dir" value="${mcp.dir}/bin/minecraft" />
-	<property name="resources.dir" value="resources" />
-	<property name="windows.python" value="${mcp.dir}/runtime/bin/python/python_mcp.exe" />
-
-	<property name="package.meta-inf" value="META-INF" />
-	<property name="build.ver" value="1.6.2" />
-	<!--<property name="files.minecraft.dir" value="jars" />-->
-	<property name="dist.dir" value="${build.dir}/dist" />
-
-	<property name="download.dir" value="downloads" />
-	<property name="pcc.dir" value="../PowerCrystalsCore" />
-
-	<property name="lib.dir" value="${mcp.dir}/lib" />
-
-	<property file="${forge.dir}/forgeversion.properties" />
-	<condition property="forge.already.installed">
-		<equals arg1="${forge.build.number}" arg2="${forge.buildnum}" />
-	</condition>
-
-	<property name="verclass.dir" value="${mcpsrc.dir}/powercrystals/minefactoryreloaded" />
-	<property name="verclass.name" value="MineFactoryReloadedCore.java"/>
-	
-	<condition property="have-apis">
-		<and>
-			<available file="${mcpsrc.dir}/powercrystals/core" type="dir"/>
-			<!--<available file="${mcpsrc.dir}/buildcraft" type="dir"/>-->
-			<available file="${mcpsrc.dir}/ic2" type="dir"/>
-			<!--<available file="${mcpsrc.dir}/universalelectricity" type="dir"/>
-			<available file="${mcpsrc.dir}/thermalexpansion" type="dir"/>
-			<available file="${mcpsrc.dir}/thaumcraft" type="dir"/>
-			<available file="${mcpsrc.dir}/forestry" type="dir"/>-->
-		</and>
-	</condition>
 	
 	<path id="mcp.classpath">
 		<pathelement location="${mcp.dir}/bin/minecraft"/>
@@ -56,82 +25,126 @@
 		<pathelement location="${mcp.dir}/jars/libraries/org/lwjgl/lwjgl/lwjgl/2.9.0/lwjgl-2.9.0.jar"/>
 		<pathelement location="${mcp.dir}/jars/libraries/org/lwjgl/lwjgl/lwjgl_util/2.9.0/lwjgl_util-2.9.0.jar"/>
 	</path>
+	
+	<property name="windows.python" value="${mcp.dir}/runtime/bin/python/python_mcp.exe" />
+	<property name="package.meta-inf" value="META-INF" />
+	<property name="build.ver" value="1.6.2" />
+	<property name="dist.dir" value="${build.dir}/dist" />
+	<property name="download.dir" value="downloads" />
+	
+	<property file="${forge.dir}/forgeversion.properties" />
+	<condition property="forge.already.installed">
+		<equals arg1="${forge.build.number}" arg2="${forge.buildnum}" />
+	</condition>
+	
+	<property name="verclass.dir" value="${mcpsrc.dir}/powercrystals/minefactoryreloaded" />
+	<property name="verclass.name" value="MineFactoryReloadedCore.java"/>
+	
+	<property name="api.ic2.build" value="223" />
+	<property name="api.ic2.file" value="industrialcraft-2-api_2.0.${api.ic2.build}-experimental.zip" />
+	<property name="api.ic2.url" value="http://ic2api.player.to:8080/job/IC2_experimental/${api.ic2.build}/artifact/packages/${api.ic2.file}" />
+	
+	<property name="api.forestry.version" value="2.3.0.1" />
+	<property name="api.forestry.file" value="forestry-api-${api.forestry.version}.zip" />
+	<property name="api.forestry.url" value="http://forestry.sengir.net/files/forestry/releases/${api.forestry.version}/${api.forestry.file}" />
 
-	<target name="get-dependencies" depends="get-version" unless="${have-apis}">
-		<!--<echo message="Downloading IC2 API... " />
-		<get src="http://www.powercrystalsmods.com/build/ic2-api.zip" dest="${download.dir}/industrialcraft-2-api.zip" />
-		
-		<echo message="Downloading BuildCraft API..." />
-		<get src="http://www.powercrystalsmods.com/build/buildcraft-api.zip" dest="${download.dir}/BuildCraft-master.zip"/>
-		
-		<echo message="Downloading PowerCrystalsCore... " />
-		<get src="https://github.com/powercrystals/PowerCrystalsCore/archive/master.zip" dest="${download.dir}/PowerCrystalsCore-master.zip"/>
-		
-		<echo message="Downloading UniversalElectricity API... " />
-		<get src="http://www.powercrystalsmods.com/build/UniversalElectricity_v1.3.1.67.zip" dest="${download.dir}/ue-api.zip" />
-		
-		<echo message="Downloading ThermalExpansion API... " />
-		<get src="https://dl.dropboxusercontent.com/u/57416963/Minecraft/Mods/ThermalExpansion/api/ThermalExpansion-API-2.3.0.zip" dest="${download.dir}/te-api.zip" />
-		
-		<echo message="Downloading Thaumcraft API... " />
-		<get src="http://www.powercrystalsmods.com/build/ThaumcraftAPI.zip" dest="${download.dir}/ThaumcraftAPI.zip" />
-		
-		<echo message="Downloading Forestry API... "/>
-		<get src="https://dl.dropboxusercontent.com/u/23892866/Downloads/forestry.zip" dest="${download.dir}/ForestryAPI.zip" />-->
-	</target>
-
-	<target name="extract-dependencies" depends="setup-forge,get-dependencies" unless="${have-apis}">
-		<copy todir="${mcpsrc.dir}/powercrystals/core">
-			<!--<fileset dir="${download.dir}/PowerCrystalsCore-master/src/powercrystals/core" />-->
-			<fileset dir="${pcc.dir}/src/powercrystals/core" />
-		</copy>
-		
-		<!--<echo message="Extracting BuildCraft API..." />
-		<unzip src="${download.dir}/BuildCraft-master.zip" dest="${download.dir}"/>
-		<mkdir dir="${mcpsrc.dir}/buildcraft/" />
-		<move file="${download.dir}/buildcraft/api" todir="${mcpsrc.dir}/buildcraft"/>
-		<move file="${download.dir}/buildcraft/core/IMachine.java" todir="${mcpsrc.dir}/buildcraft/core"/>-->
-		
-		<echo message="Extracting IC2 API... " />
-		<unzip src="${download.dir}/industrialcraft-2-api.zip" dest="${download.dir}" />
-		<move file="${download.dir}/ic2" todir="${mcpsrc.dir}" />
-		
-		<!--<echo message="Extracting UniversalElectricity API... " />
-		<unzip src="${download.dir}/ue-api.zip" dest="${download.dir}/universalelectricity/" />
-		<move file="${download.dir}/universalelectricity/universalelectricity" todir="${mcpsrc.dir}" />
-		<echo message="Deleting stuff from the UE API that isn't actually the API... " />
-		<delete dir="${mcpsrc.dir}/universalelectricity/components"/>
-		<delete dir="${mcpsrc.dir}/universalelectricity/prefab"/>
-		
-		<echo message="Extracting ThermalExpansion API... " />
-		<unzip src="${download.dir}/te-api.zip" dest="${download.dir}/thermalexpansion/" />
-		<move file="${download.dir}/thermalexpansion/thermalexpansion" todir="${mcpsrc.dir}" />
-		
-		<echo message="Extracting Thaumcraft API... " />
-		<unzip src="${download.dir}/ThaumcraftAPI.zip" dest="${download.dir}/thaumcraft/" />
-		<move file="${download.dir}/thaumcraft/thaumcraft" todir="${mcpsrc.dir}" />
-		
-		<echo message="Extracting Forestry API... " />
-		<unzip src="${download.dir}/ForestryAPI.zip" dest="${download.dir}" />
-		<move file="${download.dir}/forestry" todir="${mcpsrc.dir}" />-->
-	</target>
-
+	<available property="forge-exists" file="${download.dir}/minecraftforge-src-${forge.version}.zip" />
+	<available property="already-compiled" file="${classes.dir}/powercrystals" />
+	
+	<condition property="have-apis">
+		<and>
+			<available file="${download.dir}/${api.ic2.file}" type="file"/>
+			<available file="${download.dir}/${api.forestry.file}" type="file"/>
+			<!--<available file="${download.dir}/{api.te.file}" type="file"/>
+			<available file="${download.dir}/{api.tc.file}" type="file"/>-->
+		</and>
+	</condition>
+	
 	<mkdir dir="${download.dir}"/>
 	<mkdir dir="${build.dir}" />
 	
-	<target name="get-version" depends="setup-forge">
+	<target name="download-forge" unless="forge-exists">
+		<echo message="Downloading forge... " />
+		<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
+	</target>
+	
+	<target name="setup-forge" depends="download-forge" unless="forge.already.installed">
+		<unzip dest="${build.dir}">
+			<fileset dir="${download.dir}">
+				<include name="minecraftforge-src-${forge.version}.zip"/>
+			</fileset>
+		</unzip>
+		
+		<!-- Change executables' permitions -->
+		<chmod file="${forge.dir}/install.sh" perm="+x"/>
+		
+		<!-- Copy PowerCrystal's Core accesstransformers configuration file-->
+		<copy file="PowerCrystalsCore/pcc_at.cfg" todir="${forge.dir}/accesstransformers/"/>
+		
+		<!-- Install forge -->
+		<delete dir="${mcp.dir}" failonerror="no"/>
+		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" inputstring="Yes\n">
+			<arg line="/c install.cmd"/>
+		</exec>
+		
+		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
+			<arg value="install.sh" />
+		</exec>
+		
+		<!--<exec executable="${windows.python}" osfamily="windows" failonerror="true">
+			<arg line="patch.py ${mcpsrc.dir}/net/minecraft/world/WorldServer.java" />
+		</exec>
+		
+		<exec executable="python" osfamily="unix" failonerror="true">
+			<arg line="patch.py ${mcpsrc.dir}/net/minecraft/world/WorldServer.java" />
+		</exec>-->
+		
+		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
+		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
+		<chmod file="${mcp.dir}/reobfuscate.sh" perm="+x"/>
+		<chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x" />
+		<chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x" />
+	</target>
+	
+	<target name="get-dependencies" unless="${have-apis}">
+		<echo message="Downloading IC2 API... " />
+		<get src="${api.ic2.url}" dest="${download.dir}/${api.ic2.file}" />
+		
+		<echo message="Downloading Forestry API... "/>
+		<get src="${api.forestry.url}" dest="${download.dir}/${api.forestry.file}" />
+		
+		<!--<echo message="Downloading ThermalExpansion API... " />
+		<get src="${api.te.url}" dest="${download.dir}/${api.te.file}" />
+		
+		<echo message="Downloading Thaumcraft API... " />
+		<get src="${api.tc.url}" dest="${download.dir}/${api.tc.file}" />-->
+	</target>
+	
+	<target name="extract-dependencies" depends="setup-forge,get-dependencies">
+		<echo message="Extracting IC2 API... " />
+		<unzip src="${download.dir}/${api.ic2.file}" dest="${mcpsrc.dir}" />
+		
+		<echo message="Extracting Forestry API... " />
+		<unzip src="${download.dir}/${api.forestry.file}" dest="${mcpsrc.dir}" />
+		
+		<!--<echo message="Extracting ThermalExpansion API... " />
+		<unzip src="${download.dir}/${api.te.file}" dest="${mcpsrc.dir}" />
+		
+		<echo message="Extracting Thaumcraft API... " />
+		<unzip src="${download.dir}/${api.tc.file}" dest="${mcpsrc.dir}" />-->
+	</target>
+	
+	<target name="copy-source" depends="setup-forge">
 		<!-- Copy source -->
 		<mkdir dir="${mcpsrc.dir}/powercrystals" />
 		<copy todir="${mcpsrc.dir}/powercrystals" overwrite="true">
 			<fileset dir="${src.dir}/powercrystals">
-				<exclude name="minefactoryreloaded/modhelpers/"/>
-			</fileset>
-		</copy>
-		<copy todir="${mcpsrc.dir}/powercrystals/minefactoryreloaded/modhelpers" overwrite="true">
-			<fileset dir="${src.dir}/powercrystals/minefactoryreloaded/modhelpers">
-				<include name="*.java"/>
-				<include name="vanilla/"/>
-				<include name="ic2/"/>
+				<exclude name="minefactoryreloaded/modhelpers/rp2" />
+				<exclude name="minefactoryreloaded/modhelpers/thaumcraft/" />
+				<exclude name="minefactoryreloaded/modhelpers/thermalexpansion/" />
+				<exclude name="minefactoryreloaded/modhelpers/xycraft" />
+				<exclude name="minefactoryreloaded/modhelpers/forestry/ForestryPre.java" />
+				<exclude name="minefactoryreloaded/setup/recipe/ThermalExpansion.java" />
 			</fileset>
 		</copy>
 		<mkdir dir="${mcpsrc.dir}/assets" />
@@ -141,9 +154,24 @@
 		<!--<mkdir dir="${mcpsrc.dir}/skyboy" />
 		<copy todir="${mcpsrc.dir}/skyboy" overwrite="true">
 			<fileset dir="${src.dir}/skyboy"/>
+		</copy>-->
+		
+		<copy todir="${mcpsrc.dir}/powercrystals" overwrite="true">
+			<fileset dir="PowerCrystalsCore/src/powercrystals" />
 		</copy>
-		<copy todir="${mcpsrc.dir}" file="mcmod.info" overwrite="true"/>-->
-
+		
+		<mkdir dir="${mcpsrc.dir}/buildcraft/api" />
+		<copy todir="${mcpsrc.dir}/buildcraft/api" overwrite="true">
+			<fileset dir="BuildCraft/common/buildcraft/api" />
+		</copy>
+		
+		<mkdir dir="${mcpsrc.dir}/universalelectricity" />
+		<copy todir="${mcpsrc.dir}/universalelectricity" overwrite="true">
+			<fileset dir="Universal-Electricity/src/universalelectricity" />
+		</copy>
+		
+		<!-- Get mod version from source -->
+		
 		<exec executable="${windows.python}" osfamily="windows" outputproperty="grep.out">
 			<arg value="grep.py"/>
 			<arg value="'[0-9.]+R[0-9.]+(RC[0-9]+)?(B[0-9]+)?' ${verclass.dir}/${verclass.name}"/>
@@ -164,25 +192,25 @@
 		<echo message="Grepped version: ${grep.out}"/>
 		<echo message="versionscript.py returned: ${python.out}"/>
 	</target>
-
-	<available property="forge-exists" file="${download.dir}/minecraftforge-src-${forge.version}.zip" />
-	<available property="already-compiled" file="${classes.dir}/powercrystals" />
-
-	<target name="clean">
+	
+	<target name="clean" depends="setup-forge">
 		<delete dir="${mcp.dir}/reobf" />
+
 		<delete dir="${mcpbin.dir}/powercrystals" />
+		<delete dir="${mcpbin.dir}/ic2" />
+		<delete dir="${mcpbin.dir}/forestry" />
+		<delete dir="${mcpbin.dir}/buildcraft" />
+		<delete dir="${mcpbin.dir}/universalelectricity" />
+
 		<delete dir="${mcpsrc.dir}/assets" />
 		<delete dir="${mcpsrc.dir}/powercrystals" />
+		<delete dir="${mcpsrc.dir}/ic2" />
+		<delete dir="${mcpsrc.dir}/forestry" />
+		<delete dir="${mcpsrc.dir}/buildcraft" />
+		<delete dir="${mcpsrc.dir}/universalelectricity" />
 	</target>
-
-	<target name="install" depends="clean,build">
-		<zip destfile="${dist.dir}/MFR-API-${python.out}-${build.number}.zip" basedir="${apiclasses.dir}" />
-		<jar destfile="${dist.dir}/MineFactoryReloaded-${python.out}-${build.number}.jar" basedir="${classes.dir}"/>
-		<delete dir="${classes.dir}" />
-		<delete dir="{$apiclasses.dir}" />
-	</target>
-    
-	<target name="build" depends="extract-dependencies" unless="already-compiled">
+	
+	<target name="build" depends="clean,extract-dependencies,copy-source" unless="already-compiled">
 		<!-- Recompile -->
 		<depend srcdir="${mcpsrc.dir}" destdir="${mcp.dir}/bin/minecraft">
 			<include name="powercrystals/minefactoryreloaded/**/*.java"/>
@@ -192,18 +220,21 @@
 			<include name="powercrystals/minefactoryreloaded/**/*.java"/>
 			<compilerarg line="-Xlint:deprecation"/>
 		</javac>
-
+		
 		<!-- Reobf -->
 		<exec dir="${mcp.dir}" executable="${windows.python}"
 			osfamily="windows" failonerror="true">
 			<arg line="runtime\reobfuscate.py --srgnames" />
 		</exec>
-
+		
 		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
 			<arg value="reobfuscate.sh" />
 			<arg value="--srgnames" />
 		</exec>
-
+		
+		<delete dir="${mcp.dir}/reobf/minecraft/ic2"/>
+		<delete dir="${mcp.dir}/reobf/minecraft/buildcraft"/>
+		<delete dir="${mcp.dir}/reobf/minecraft/universalelectricity"/>
 		<delete dir="${mcp.dir}/reobf/minecraft/thaumcraft"/>
 		<delete dir="${mcp.dir}/reobf/minecraft/forestry"/>
 		<delete dir="${mcp.dir}/reobf/minecraft/thermalexpansion"/>
@@ -218,81 +249,28 @@
 		</copy>
 		
 		<copy todir="${classes.dir}" file="mcmod.info"/>
-
+		
 		<copy todir="${classes.dir}" file="pack.mcmeta"/>
-
+		
 		<copy todir="${classes.dir}/assets">
 			<fileset dir="${mcpsrc.dir}/assets" />
 		</copy>
 	</target>
-
+	
 	<target name="build-number-there" if="env.BUILD_NUMBER" >
 		<echo message="Using build number ${env.BUILD_NUMBER}..." />
 		<property name="build.number" value="${env.BUILD_NUMBER}" />
 	</target>
-
+	
 	<target name="build-number-not-there" unless="env.BUILD_NUMBER" >
 		<echo message="!! No build number set !!" />
 		<property name="build.number" value="CUSTOM_BUILD" />
 	</target>
-
-	<target name="setup-forge" depends="download-core,download-forge,build-number-there,build-number-not-there" unless="forge.already.installed">
-
-		<property name="build.full" value="${build.number}" />
-		<unzip dest="${build.dir}">
-			<fileset dir="${download.dir}">
-				<include name="minecraftforge-src-${forge.version}.zip"/>
-			</fileset>
-		</unzip>
-		
-		<!-- Change executables' permitions -->
-		<chmod file="${forge.dir}/install.sh" perm="+x"/>
-
-		<!--<copy file="${download.dir}/PowerCrystalsCore-master/pcc_at.cfg" todir="${forge.dir}/accesstransformers/"/>-->
-		<copy file="${pcc.dir}/pcc_at.cfg" todir="${forge.dir}/accesstransformers/"/>
-
-		<!-- Install forge -->
-		<delete dir="${mcp.dir}" failonerror="no"/>
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" inputstring="Yes\n">
-			<arg line="/c install.cmd"/>
-		</exec>
-
-		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
-			<arg value="install.sh" />
-		</exec>
-
-		<!--<exec executable="${windows.python}" osfamily="windows" failonerror="true">
-			<arg line="patch.py ${mcpsrc.dir}/net/minecraft/world/WorldServer.java" />
-		</exec>
-
-		<exec executable="python" osfamily="unix" failonerror="true">
-			<arg line="patch.py ${mcpsrc.dir}/net/minecraft/world/WorldServer.java" />
-		</exec>-->
-
-		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
-		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
-		<chmod file="${mcp.dir}/reobfuscate.sh" perm="+x"/>
-		<chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x" />
-		<chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x" />
-
-		<!-- Copy source -->
-		<mkdir dir="${mcpsrc.dir}/powercrystals" />
-		<copy todir="${mcpsrc.dir}/powercrystals" overwrite="true">
-			<fileset dir="${src.dir}/powercrystals"/>
-		</copy>
-		<!--<copy todir="${mcpsrc.dir}" file="mcmod.info" overwrite="true"/>-->
-	</target>
-
-	<target name="download-forge" unless="forge-exists">
-		<echo message="Downloading forge... " />
-		<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
-	</target>
 	
-	<target name="download-core" unless="forge-exists">
-		<!--<echo message="Downloading PowerCrystalsCore... " />
-		<get src="https://github.com/powercrystals/PowerCrystalsCore/archive/master.zip" dest="${download.dir}/PowerCrystalsCore-master.zip"/>
-		
-		<echo message="Extracting PowerCrystalsCore... " />
-		<unzip src="${download.dir}/PowerCrystalsCore-master.zip" dest="${download.dir}"/>-->
+	<target name="install" depends="build,build-number-there,build-number-not-there">
+		<zip destfile="${dist.dir}/MFR-API-${python.out}-${build.number}.zip" basedir="${apiclasses.dir}" />
+		<jar destfile="${dist.dir}/MineFactoryReloaded-${python.out}-${build.number}.jar" basedir="${classes.dir}"/>
+		<delete dir="${classes.dir}" />
+		<delete dir="{$apiclasses.dir}" />
 	</target>
 </project>

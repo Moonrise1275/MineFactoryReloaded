@@ -56,12 +56,12 @@ import powercrystals.minefactoryreloaded.tile.machine.TileEntityLaserDrillPrecha
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetHistorian;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetLogic;
 import powercrystals.minefactoryreloaded.tile.rednet.TileEntityRedNetCable;
-
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -83,7 +83,9 @@ public class MineFactoryReloadedClient implements IScheduledTickHandler
 	public static void init()
 	{
 		instance = new MineFactoryReloadedClient();
-		
+
+		VillagerRegistry.instance().registerVillagerSkin(MFRConfig.zoolologistEntityId.getInt(), MineFactoryReloadedCore.getVillagerTexture("zoologist.png"));
+
 		MineFactoryReloadedCore.renderIdConveyor = RenderingRegistry.getNextAvailableRenderId();
 		MineFactoryReloadedCore.renderIdFactoryGlassPane = RenderingRegistry.getNextAvailableRenderId();
 		MineFactoryReloadedCore.renderIdRedstoneCable = RenderingRegistry.getNextAvailableRenderId();

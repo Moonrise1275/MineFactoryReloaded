@@ -12,16 +12,24 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-//import powercrystals.core.asm.relauncher.Implementable;
+import powercrystals.core.asm.relauncher.Implementable;
 import powercrystals.core.position.BlockPosition;
 import powercrystals.minefactoryreloaded.core.BlockNBTManager;
 import powercrystals.minefactoryreloaded.core.MFRLiquidMover;
 import powercrystals.minefactoryreloaded.setup.Machine;
-//import buildcraft.api.gates.IAction; 
 
-//@Implementable("buildcraft.core.IMachine")
+import buildcraft.api.transport.IPipeConnection.ConnectOverride;
+import buildcraft.api.transport.IPipeTile.PipeType;
+import buildcraft.api.gates.IAction;
+
+@Implementable("buildcraft.api.transport.IPipeConnection;buildcraft.core.IMachine")
 public abstract class TileEntityFactoryInventory extends TileEntityFactory implements ISidedInventory
 {
+	public enum ConnectType
+	{
+		CONNECT, DISCONNECT, DEFAULT
+	}
+	
 	protected Machine machine;
 	
 	protected String _invName;
@@ -97,9 +105,11 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	protected ItemStack[] _inventory;
 	
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot(int slot)
 	{
-		return _inventory[i];
+		if (_inventory == null || slot < 0 || slot >= _inventory.length)
+			return null;
+		return _inventory[slot];
 	}
 	
 	@Override
@@ -314,6 +324,11 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 		return slots;
 	}
 	
+	public int getSizeInventory()
+	{
+		return 0;
+	}
+	
 	public int getStartInventorySide(ForgeDirection side)
 	{
 		return 0;
@@ -357,12 +372,35 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 		return ret / len;
 	}
 	
+	public ConnectType canConnectItemPipe(ForgeDirection with)
+	{
+		return ConnectType.DEFAULT;
+	}
+	
+	// IPipeConnection
+	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
+	{
+		if (type != PipeType.ITEM)
+			return ConnectOverride.DEFAULT;
+		
+		switch (canConnectItemPipe(with))
+		{
+			case CONNECT:
+				return ConnectOverride.CONNECT;
+			case DISCONNECT:
+				return ConnectOverride.DISCONNECT;
+		}
+
+		return ConnectOverride.DEFAULT;
+	}
+	
+	// IMachine
 	public boolean isActive()
 	{
 		return false;
 	}
 	
-	public boolean manageLiquids()
+	public boolean manageFluids()
 	{
 		return false;
 	}
@@ -371,15 +409,14 @@ public abstract class TileEntityFactoryInventory extends TileEntityFactory imple
 	{
 		return false;
 	}
-	/*
+	
 	public boolean allowActions()
 	{
 		return false;
 	}
 	
-	public boolean allowAction(IAction _)
+	public boolean allowAction(IAction action)
 	{
 		return this.allowActions();
 	}
-	*/
 }

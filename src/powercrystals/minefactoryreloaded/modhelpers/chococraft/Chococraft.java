@@ -8,6 +8,7 @@ import powercrystals.minefactoryreloaded.farmables.plantables.PlantableCropPlant
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -17,7 +18,7 @@ dependencies = "required-after:MineFactoryReloaded;after:chococraft")
 @NetworkMod(clientSideRequired=false, serverSideRequired=false)
 public class Chococraft
 {
-	@Mod.Init
+	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
 		if (!Loader.isModLoaded("chococraft"))

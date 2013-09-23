@@ -5,10 +5,8 @@ import java.lang.reflect.Field;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidContainerData;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import powercrystals.minefactoryreloaded.MFRRegistry;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.modhelpers.forestry.fertilizer.FertilizerForestry;
@@ -21,8 +19,7 @@ import powercrystals.minefactoryreloaded.modhelpers.forestry.utils.ForestryUtils
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.PostInit;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -34,7 +31,7 @@ import powercrystals.minefactoryreloaded.tile.machine.TileEntityUnifier;
 @NetworkMod(clientSideRequired = false, serverSideRequired = false)
 public class Forestry
 {
-	@Init
+	@EventHandler
 	public static void load(FMLInitializationEvent e)
 	{
 		if(!Loader.isModLoaded("Forestry"))
@@ -92,28 +89,20 @@ public class Forestry
 		}
 	}
 	
-	@PostInit
+	@EventHandler
 	public static void postInit(FMLPostInitializationEvent e)
 	{
 		if(!Loader.isModLoaded("Forestry"))
 		{
 			return;
 		}
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("milk", new LiquidStack(
-				MineFactoryReloadedCore.milkLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("sludge", new LiquidStack(
-				MineFactoryReloadedCore.sludgeLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(MineFactoryReloadedCore.sludgeBucketItem),
-				new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("sewage", new LiquidStack(
-				MineFactoryReloadedCore.sewageLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(MineFactoryReloadedCore.sewageBucketItem),
-				new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("mobEssence", new LiquidStack(
-				MineFactoryReloadedCore.essenceLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(MineFactoryReloadedCore.mobEssenceBucketItem),
-				new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getOrCreateLiquid("biofuel", new LiquidStack(
-				MineFactoryReloadedCore.biofuelLiquid, LiquidContainerRegistry.BUCKET_VOLUME)), new ItemStack(MineFactoryReloadedCore.bioFuelBucketItem),
-				new ItemStack(Item.bucketEmpty)));
-		
+		/*
+                FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("milk"), new ItemStack(Item.bucketMilk), FluidContainerRegistry.EMPTY_BUCKET);
+                FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("sludge"), new ItemStack(sludgeBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+                FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("sewage"), new ItemStack(sewageBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+                FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("mobessence"), new ItemStack(mobEssenceBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+                FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("biofuel"), new ItemStack(bioFuelBucketItem), FluidContainerRegistry.EMPTY_BUCKET);
+		*/
 		MineFactoryReloadedCore.proxy.onPostTextureStitch(null);
 		ForestryUtils.setTreeRoot();
 		

@@ -142,7 +142,8 @@ public class TileEntityLiquidRouter extends TileEntityFactoryInventory implement
 		
 		for(int i = 0; i < 6; i++)
 		{
-			if(FluidContainerRegistry.containsFluid(_inventory[i], resource))
+			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(_inventory[i]);
+			if(fluid != null && fluid.isFluidEqual(resource))
 			{
 				routeWeights[i] = _inventory[i].stackSize;
 			}
@@ -177,17 +178,29 @@ public class TileEntityLiquidRouter extends TileEntityFactoryInventory implement
 	{
 		return pumpLiquid(resource, doFill);
 	}
-	/*
-	@Override
-	public int fill(int tankIndex, FluidStack resource, boolean doFill)
-	{
-		return pumpLiquid(resource, doFill);
-	}
-	*/
+	
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		for (int i = 0; i < 6; i++)
+		{
+			if (_outputDirections[i] == from || _inventory[i] == null)
+			{
+				continue;
+			}
+			
+			if (FluidContainerRegistry.isEmptyContainer(_inventory[i]))
+			{
+				return true;
+			}
+			
+			FluidStack containFluid = FluidContainerRegistry.getFluidForFilledItem(_inventory[i]);
+			if (containFluid != null && containFluid.fluidID == fluid.getID())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -201,13 +214,7 @@ public class TileEntityLiquidRouter extends TileEntityFactoryInventory implement
 	{
 		return null;
 	}
-	/*
-	@Override
-	public FluidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-	*/
+
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
@@ -219,17 +226,7 @@ public class TileEntityLiquidRouter extends TileEntityFactoryInventory implement
 	{
 		return new FluidTankInfo[] { _bufferTanks[direction.ordinal()].getInfo() };
 	}
-	/*
-	@Override
-	public FluidTank getTank(ForgeDirection direction, FluidStack type)
-	{
-		if(FluidContainerRegistry.containsLiquid(_inventory[direction.ordinal()], type))
-		{
-			return _bufferTanks[direction.ordinal()];
-		}
-		return null;
-	}
-	*/
+
 	@Override
 	public int getSizeInventory()
 	{
@@ -271,5 +268,11 @@ public class TileEntityLiquidRouter extends TileEntityFactoryInventory implement
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
 	{
 		return false;
+	}
+
+	@Override
+	public ConnectType canConnectItemPipe(ForgeDirection with)
+	{
+		return ConnectType.DISCONNECT;
 	}
 }

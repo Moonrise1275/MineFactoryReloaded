@@ -16,14 +16,7 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 	public TileEntitySlaughterhouse()
 	{
 		super(Machine.Slaughterhouse);
-		_damageSource = new GrindingDamage("mfr.slaughterhouse", 2);
-	}
-	
-	@Override
-	public void setWorldObj(World world)
-	{
-		super.setWorldObj(world);
-		//this._grindingWorld.setAllowSpawns(true);
+		_damageSource = new GrindingDamage(this, "mfr.slaughterhouse", 2);
 	}
 	
 	@Override
@@ -35,12 +28,16 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 	@Override
 	public boolean activateMachine()
 	{
-		//_grindingWorld.cleanReferences();
 		List<?> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, _areaManager.getHarvestArea().toAxisAlignedBB());
 		
 		entityList: for(Object o : entities)
 		{
 			EntityLivingBase e = (EntityLivingBase)o;
+			if(e.isChild() || e.isEntityInvulnerable() || e.func_110143_aJ() <= 0)
+			{
+				continue;
+			}
+
 			for(Class<?> t : MFRRegistry.getSlaughterhouseBlacklist())
 			{
 				if(t.isInstance(e))
@@ -48,11 +45,7 @@ public class TileEntitySlaughterhouse extends TileEntityGrinder
 					continue entityList;
 				}
 			}
-			if((e instanceof EntityAgeable && ((EntityAgeable)e).getGrowingAge() < 0) || e.isEntityInvulnerable() || e.func_110143_aJ() <= 0)
-					//|| !_grindingWorld.addEntityForGrinding(e))
-			{
-				continue;
-			}
+
 			double massFound = Math.pow(e.boundingBox.getAverageEdgeLength(), 2);
 			damageEntity(e);
 			if(e.func_110143_aJ() <= 0)

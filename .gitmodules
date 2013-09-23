@@ -1,0 +1,9 @@
+[submodule "BuildCraft"]
+	path = BuildCraft
+	url = https://github.com/BuildCraft/BuildCraft.git
+[submodule "Universal-Electricity"]
+	path = Universal-Electricity
+	url = https://github.com/Universal-Electricity/Universal-Electricity.git
+[submodule "PowerCrystalsCore"]
+	path = PowerCrystalsCore
+	url = https://github.com/stranger1029/PowerCrystalsCore.git

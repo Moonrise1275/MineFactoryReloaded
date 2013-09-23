@@ -3,6 +3,7 @@ package powercrystals.minefactoryreloaded.modhelpers.ic2;
 
 import ic2.api.item.Items;
 import ic2.api.recipe.Recipes;
+import ic2.api.recipe.RecipeInputItemStack;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import powercrystals.minefactoryreloaded.MFRRegistry;
@@ -73,7 +74,7 @@ public class IC2
 					Character.valueOf('L'), new ItemStack(MineFactoryReloadedCore.rubberLeavesBlock)
 					} );
 			
-			Recipes.extractor.addRecipe(new ItemStack(MineFactoryReloadedCore.rubberSaplingBlock), rubber);
+			Recipes.extractor.addRecipe(new RecipeInputItemStack(new ItemStack(MineFactoryReloadedCore.rubberSaplingBlock)), null, rubber);
 		}
 		catch (Exception x)
 		{

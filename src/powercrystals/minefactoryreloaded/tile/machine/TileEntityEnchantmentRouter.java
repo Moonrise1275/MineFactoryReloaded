@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeDirection;
 import powercrystals.minefactoryreloaded.gui.client.GuiEnchantmentRouter;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryInventory;
 import powercrystals.minefactoryreloaded.gui.container.ContainerEnchantmentRouter;
@@ -110,5 +111,17 @@ public class TileEntityEnchantmentRouter extends TileEntityItemRouter
 	{
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setBoolean("matchLevels", _matchLevels);
+	}
+	
+	@Override
+	public ConnectType canConnectItemPipe(ForgeDirection with)
+	{
+		return ConnectType.CONNECT;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	{
+		return false;
 	}
 }

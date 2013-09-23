@@ -17,7 +17,7 @@ import powercrystals.minefactoryreloaded.farmables.plantables.PlantableStandard;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -27,7 +27,7 @@ public class ExtraBiomes
 {
 	private static Map<String, HarvestType> _harvestRegistries;
 	
-	@Init
+	@EventHandler
 	public static void load(FMLInitializationEvent ev)
 	{
 		if(!Loader.isModLoaded("ExtrabiomesXL"))
