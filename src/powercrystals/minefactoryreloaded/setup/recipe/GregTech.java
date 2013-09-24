@@ -180,7 +180,7 @@ public class GregTech extends Vanilla
 					'T', Item.bucketEmpty,
 					'S', Block.furnaceIdle,
 					'F', "craftingRawMachineTier02",
-					'O', "plateRefinedIron",
+					'O', "plateIron",
 					'C', "craftingCircuitTier04"
 						} ));
 			}
@@ -465,7 +465,7 @@ public class GregTech extends Vanilla
 					"SFS",
 					"OCO",
 					'P', "sheetPlastic",
-					'S', "plateRefinedIron",
+					'S', "plateIron",
 					'F', generator,
 					'O', Item.blazeRod,
 					'C', "craftingCircuitTier04"
