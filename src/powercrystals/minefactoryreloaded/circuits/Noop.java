@@ -31,12 +31,12 @@ public class Noop extends StatelessCircuit
 	@Override
 	public String getInputPinLabel(int pin)
 	{
-		return ((Integer)pin).toString();
+		return Integer.toString(pin);
 	}
 	
 	@Override
 	public String getOutputPinLabel(int pin)
 	{
-		return ((Integer)pin).toString();
+		return Integer.toString(pin);
 	}
 }

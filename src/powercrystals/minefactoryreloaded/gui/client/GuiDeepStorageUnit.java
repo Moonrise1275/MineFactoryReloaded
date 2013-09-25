@@ -79,7 +79,7 @@ public class GuiDeepStorageUnit extends GuiFactoryInventory
 		fontRenderer.drawString("West", 68, 70, 4210752);
 		
 		fontRenderer.drawString("Stored:", 110, 70, 4210752);
-		fontRenderer.drawString(((Integer)_dsu.getQuantity()).toString(), 110, 80, 4210752);
+		fontRenderer.drawString(Integer.toString(_dsu.getQuantity()), 110, 80, 4210752);
 	}
 	
 	@Override

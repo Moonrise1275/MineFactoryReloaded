@@ -82,7 +82,7 @@ public class ButtonLogicPinSelect extends Button
 	public void setPin(int pin)
 	{
 		_pin = pin;
-		setText(((Integer)_pin).toString());
+		setText(Integer.toString(_pin));
 	}
 	
 	@Override
@@ -154,7 +154,7 @@ public class ButtonLogicPinSelect extends Button
 	
 	private void updatePin()
 	{
-		setText(((Integer)_pin).toString());
+		setText(Integer.toString(_pin));
 		if(_buttonType == LogicButtonType.Input)
 		{
 			_containerScreen.setInputPinMapping(_pinIndex, _buffer, _pin);
