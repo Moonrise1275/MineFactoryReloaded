@@ -106,9 +106,6 @@ import powercrystals.minefactoryreloaded.farmables.fertilizables.FertilizableSap
 import powercrystals.minefactoryreloaded.farmables.fertilizables.FertilizableStemPlants;
 import powercrystals.minefactoryreloaded.farmables.fertilizables.FertilizerStandard;
 import powercrystals.minefactoryreloaded.farmables.fruits.FruitCocoa;
-import powercrystals.minefactoryreloaded.farmables.grindables.GrindableSlime;
-import powercrystals.minefactoryreloaded.farmables.grindables.GrindableStandard;
-import powercrystals.minefactoryreloaded.farmables.grindables.GrindableZombiePigman;
 import powercrystals.minefactoryreloaded.farmables.harvestables.HarvestableCocoa;
 import powercrystals.minefactoryreloaded.farmables.harvestables.HarvestableCropPlant;
 import powercrystals.minefactoryreloaded.farmables.harvestables.HarvestableMushroom;
@@ -213,21 +210,6 @@ public class Vanilla
 		MFRRegistry.registerGrinderBlacklist(EntityDragon.class);
 		MFRRegistry.registerGrinderBlacklist(EntityWither.class);
 		MFRRegistry.registerGrinderBlacklist(EntityVillager.class);
-		
-		MFRRegistry.registerGrindable(new GrindableStandard(EntityChicken.class, new MobDrop[]
-				{
-			new MobDrop(30, null),
-			new MobDrop(10, new ItemStack(Item.egg))
-				}, false));
-		MFRRegistry.registerGrindable(new GrindableStandard(EntityOcelot.class, new MobDrop[]
-				{
-			new MobDrop(10, new ItemStack(Item.fishRaw)),
-			new MobDrop(10, new ItemStack(Item.silk))
-				}));
-		MFRRegistry.registerGrindable(new GrindableStandard(EntityWolf.class, new ItemStack(Item.bone)));
-		MFRRegistry.registerGrindable(new GrindableZombiePigman());
-		MFRRegistry.registerGrindable(new GrindableSlime(EntitySlime.class, new ItemStack(Item.slimeBall), 1));
-		MFRRegistry.registerGrindable(new GrindableSlime(EntityPinkSlime.class, new ItemStack(MineFactoryReloadedCore.pinkSlimeballItem), 1));
 		
 		MFRRegistry.registerSludgeDrop(50, new ItemStack(Block.sand));
 		MFRRegistry.registerSludgeDrop(40, new ItemStack(Block.dirt));

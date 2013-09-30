@@ -2,8 +2,8 @@ package powercrystals.minefactoryreloaded.core;
 
 import java.util.List;
 
-import powercrystals.core.position.Area;
-import powercrystals.core.position.BlockPosition;
+import powercrystals.minefactoryreloaded.util.Area;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
 
 public class TreeHarvestManager
 {

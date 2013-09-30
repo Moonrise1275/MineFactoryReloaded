@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import powercrystals.core.position.Area;
-import powercrystals.core.position.BlockPosition;
-import powercrystals.core.position.IRotateableTile;
+import powercrystals.minefactoryreloaded.util.Area;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
+import powercrystals.minefactoryreloaded.util.IRotateableTile;
 import powercrystals.minefactoryreloaded.item.ItemUpgrade;
 
 public class HarvestAreaManager

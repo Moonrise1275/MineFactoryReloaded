@@ -12,7 +12,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import powercrystals.core.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
 import powercrystals.minefactoryreloaded.entity.EntityRocket;
 import powercrystals.minefactoryreloaded.tile.machine.TileEntityAutoDisenchanter;
 import powercrystals.minefactoryreloaded.tile.machine.TileEntityAutoEnchanter;

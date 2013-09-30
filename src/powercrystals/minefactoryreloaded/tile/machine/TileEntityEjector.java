@@ -7,10 +7,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import powercrystals.core.inventory.IInventoryManager;
-import powercrystals.core.inventory.InventoryManager;
-import powercrystals.core.util.Util;
-import powercrystals.core.util.UtilInventory;
+import powercrystals.minefactoryreloaded.util.IInventoryManager;
+import powercrystals.minefactoryreloaded.util.InventoryManager;
+import powercrystals.minefactoryreloaded.util.Util;
+import powercrystals.minefactoryreloaded.util.UtilInventory;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactory;
 
 public class TileEntityEjector extends TileEntityFactory

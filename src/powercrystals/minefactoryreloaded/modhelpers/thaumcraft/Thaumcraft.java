@@ -41,10 +41,6 @@ public class Thaumcraft
 			MFRRegistry.registerAutoSpawnerBlacklistClass(golem);
 			
 			MFRRegistry.registerGrinderBlacklist(golem);
-			
-			// TODO: redo/remove wisp?
-			
-			MFRRegistry.registerGrindable(new GrindableWisp());
 		}
 		catch(Exception x)
 		{

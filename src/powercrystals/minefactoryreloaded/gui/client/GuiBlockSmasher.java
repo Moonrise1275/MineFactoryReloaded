@@ -1,7 +1,7 @@
 package powercrystals.minefactoryreloaded.gui.client;
 
 import net.minecraft.client.gui.GuiButton;
-import powercrystals.core.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.gui.container.ContainerBlockSmasher;
 import powercrystals.minefactoryreloaded.net.Packets;

@@ -10,7 +10,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import powercrystals.core.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.core.ArrayQueue;
 import powercrystals.minefactoryreloaded.net.Packets;

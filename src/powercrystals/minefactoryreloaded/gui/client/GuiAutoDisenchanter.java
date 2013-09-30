@@ -1,7 +1,7 @@
 package powercrystals.minefactoryreloaded.gui.client;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
-import powercrystals.core.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.gui.container.ContainerFactoryPowered;
 import powercrystals.minefactoryreloaded.net.Packets;

@@ -18,8 +18,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.bouncycastle.util.Arrays;
 
-import powercrystals.core.net.PacketWrapper;
-import powercrystals.core.position.BlockPosition;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.api.rednet.IConnectableRedNet;
 import powercrystals.minefactoryreloaded.api.rednet.IRedNetLogicCircuit;

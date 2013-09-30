@@ -1,8 +1,8 @@
 package powercrystals.minefactoryreloaded.gui.control;
 
-import powercrystals.core.gui.GuiColor;
-import powercrystals.core.gui.GuiRender;
-import powercrystals.core.gui.controls.Button;
+import powercrystals.minefactoryreloaded.gui.GuiColor;
+import powercrystals.minefactoryreloaded.gui.GuiRender;
+import powercrystals.minefactoryreloaded.gui.control.Button;
 import powercrystals.minefactoryreloaded.gui.client.GuiRedNetLogic;
 import powercrystals.minefactoryreloaded.setup.MFRConfig;
 

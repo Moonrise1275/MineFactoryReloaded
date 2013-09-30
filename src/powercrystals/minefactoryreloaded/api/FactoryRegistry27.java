@@ -22,6 +22,8 @@ public class FactoryRegistry27
 	 * 
 	 * @param grindable The entity to grind.
 	 */
+	@Deprecated
+	@SuppressWarnings("deprecation")
 	public static void registerGrindable(IFactoryGrindable2 grindable)
 	{
 		try

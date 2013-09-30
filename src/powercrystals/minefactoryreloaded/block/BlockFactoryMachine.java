@@ -24,7 +24,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import powercrystals.core.position.IRotateableTile;
+import powercrystals.minefactoryreloaded.util.IRotateableTile;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.api.rednet.IConnectableRedNet;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;

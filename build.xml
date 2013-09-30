@@ -17,13 +17,9 @@
 	
 	<path id="mcp.classpath">
 		<pathelement location="${mcp.dir}/bin/minecraft"/>
-		<pathelement location="${mcp.dir}/jars/libraries/net/sourceforge/argo/argo/2.25/argo-2.25.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/org/ow2/asm/asm-all/4.1/asm-all-4.1.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/org/bouncycastle/bcprov-jdk15on/1.47/bcprov-jdk15on-1.47.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/com/google/guava/guava/14.0/guava-14.0.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/org/lwjgl/lwjgl/lwjgl/2.9.0/lwjgl-2.9.0.jar"/>
-		<pathelement location="${mcp.dir}/jars/libraries/org/lwjgl/lwjgl/lwjgl_util/2.9.0/lwjgl_util-2.9.0.jar"/>
+		<fileset dir="${mcp.dir}/jars/libraries">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
 	
 	<property name="windows.python" value="${mcp.dir}/runtime/bin/python/python_mcp.exe" />
@@ -40,7 +36,7 @@
 	<property name="verclass.dir" value="${mcpsrc.dir}/powercrystals/minefactoryreloaded" />
 	<property name="verclass.name" value="MineFactoryReloadedCore.java"/>
 	
-	<property name="api.ic2.build" value="223" />
+	<property name="api.ic2.build" value="235" />
 	<property name="api.ic2.file" value="industrialcraft-2-api_2.0.${api.ic2.build}-experimental.zip" />
 	<property name="api.ic2.url" value="http://ic2api.player.to:8080/job/IC2_experimental/${api.ic2.build}/artifact/packages/${api.ic2.file}" />
 	
@@ -79,7 +75,7 @@
 		<chmod file="${forge.dir}/install.sh" perm="+x"/>
 		
 		<!-- Copy PowerCrystal's Core accesstransformers configuration file-->
-		<copy file="PowerCrystalsCore/pcc_at.cfg" todir="${forge.dir}/accesstransformers/"/>
+		<copy file="pcc_at_{$build.ver}.cfg" todir="${forge.dir}/accesstransformers/"/>
 		
 		<!-- Install forge -->
 		<delete dir="${mcp.dir}" failonerror="no"/>
@@ -156,10 +152,6 @@
 			<fileset dir="${src.dir}/skyboy"/>
 		</copy>-->
 		
-		<copy todir="${mcpsrc.dir}/powercrystals" overwrite="true">
-			<fileset dir="PowerCrystalsCore/src/powercrystals" />
-		</copy>
-		
 		<mkdir dir="${mcpsrc.dir}/buildcraft/api" />
 		<copy todir="${mcpsrc.dir}/buildcraft/api" overwrite="true">
 			<fileset dir="BuildCraft/common/buildcraft/api" />
@@ -213,23 +205,22 @@
 	<target name="build" depends="clean,extract-dependencies,copy-source" unless="already-compiled">
 		<!-- Recompile -->
 		<depend srcdir="${mcpsrc.dir}" destdir="${mcp.dir}/bin/minecraft">
-			<include name="powercrystals/minefactoryreloaded/**/*.java"/>
+			<include name="powercrystals/minefactoryreloaded/**/*.java" />
 		</depend>
 		<javac srcdir="${mcpsrc.dir}" destdir="${mcp.dir}/bin/minecraft" target="1.6" source="1.6"
 			classpathref="mcp.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false">
-			<include name="powercrystals/minefactoryreloaded/**/*.java"/>
-			<compilerarg line="-Xlint:deprecation"/>
+			<include name="powercrystals/minefactoryreloaded/**/*.java" />
+			<compilerarg line="-Xlint:unchecked" />
 		</javac>
 		
 		<!-- Reobf -->
 		<exec dir="${mcp.dir}" executable="${windows.python}"
 			osfamily="windows" failonerror="true">
-			<arg line="runtime\reobfuscate.py --srgnames" />
+			<arg line="runtime\reobfuscate_srg.py" />
 		</exec>
 		
 		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="reobfuscate.sh" />
-			<arg value="--srgnames" />
+			<arg value="reobfuscate_srg.sh" />
 		</exec>
 		
 		<delete dir="${mcp.dir}/reobf/minecraft/ic2"/>
@@ -251,6 +242,12 @@
 		<copy todir="${classes.dir}" file="mcmod.info"/>
 		
 		<copy todir="${classes.dir}" file="pack.mcmeta"/>
+
+		<copy todir="${classes.dir}">
+			<fileset dir="./">
+				<include name="pcc_at_*.cfg" />
+			</fileset>
+		</copy>
 		
 		<copy todir="${classes.dir}/assets">
 			<fileset dir="${mcpsrc.dir}/assets" />
@@ -269,7 +266,12 @@
 	
 	<target name="install" depends="build,build-number-there,build-number-not-there">
 		<zip destfile="${dist.dir}/MFR-API-${python.out}-${build.number}.zip" basedir="${apiclasses.dir}" />
-		<jar destfile="${dist.dir}/MineFactoryReloaded-${python.out}-${build.number}.jar" basedir="${classes.dir}"/>
+		<jar destfile="${dist.dir}/MineFactoryReloaded-${python.out}-${build.number}.jar" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="FMLCorePlugin" value="powercrystals.minefactoryreloaded.asm.CoreLoader" />
+				<attribute name="FMLCorePluginContainsFMLMod" value="true" />
+			</manifest>
+		</jar>
 		<delete dir="${classes.dir}" />
 		<delete dir="{$apiclasses.dir}" />
 	</target>

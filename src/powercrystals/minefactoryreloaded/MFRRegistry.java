@@ -8,8 +8,8 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomItem;
 
-import powercrystals.core.random.WeightedRandomItemStack;
-import powercrystals.core.util.UtilInventory;
+import powercrystals.minefactoryreloaded.util.WeightedRandomItemStack;
+import powercrystals.minefactoryreloaded.util.UtilInventory;
 import powercrystals.minefactoryreloaded.api.IFactoryFertilizable;
 import powercrystals.minefactoryreloaded.api.IFactoryFertilizer;
 import powercrystals.minefactoryreloaded.api.IFactoryFruit;
@@ -31,7 +31,6 @@ public abstract class MFRRegistry
 	private static Map<Integer, IFactoryFertilizer> _fertilizers = new HashMap<Integer, IFactoryFertilizer>();
 	private static Map<Integer, IFactoryFertilizable> _fertilizables = new HashMap<Integer, IFactoryFertilizable>();
 	private static Map<Class<?>, IFactoryRanchable> _ranchables = new HashMap<Class<?>, IFactoryRanchable>();
-	private static Map<Class<?>, IFactoryGrindable2> _grindables27 = new HashMap<Class<?>, IFactoryGrindable2>();
 	private static Map<Class<?>, List<ItemStack>> _breederFoods = new HashMap<Class<?>, List<ItemStack>>();
 	private static Map<Integer, ILiquidDrinkHandler> _liquidDrinkHandlers = new HashMap<Integer, ILiquidDrinkHandler>();
 	private static Map<Integer, INeedleAmmo> _needleAmmoTypes = new HashMap<Integer, INeedleAmmo>();
@@ -108,14 +107,11 @@ public abstract class MFRRegistry
 		return _ranchables;
 	}
 
+	@Deprecated
+	@SuppressWarnings("deprecation")
 	public static void registerGrindable(IFactoryGrindable2 grindable)
 	{
-		_grindables27.put(grindable.getGrindableEntity(), grindable);
-	}
-
-	public static Map<Class<?>, IFactoryGrindable2> getGrindables27()
-	{
-		return _grindables27;
+		// Nothing
 	}
 
 	public static void registerGrinderBlacklist(Class<?> ...ungrindables)

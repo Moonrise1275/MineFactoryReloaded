@@ -4,8 +4,8 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import powercrystals.core.position.BlockPosition;
-import powercrystals.core.util.Util;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
+import powercrystals.minefactoryreloaded.util.Util;
 import powercrystals.minefactoryreloaded.setup.MFRConfig;
 import powercrystals.minefactoryreloaded.setup.Machine;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryPowered;

@@ -3,7 +3,7 @@ package powercrystals.minefactoryreloaded.tile.machine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import powercrystals.core.position.BlockPosition;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryInventory;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryPowered;
 import powercrystals.minefactoryreloaded.gui.container.ContainerFactoryPowered;

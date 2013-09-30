@@ -12,10 +12,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-//import powercrystals.core.asm.relauncher.Implementable;
-import powercrystals.core.net.PacketWrapper;
-import powercrystals.core.position.IRotateableTile;
-import powercrystals.core.util.Util;
+//import powercrystals.minefactoryreloaded.asm.relauncher.Implementable;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.util.IRotateableTile;
+import powercrystals.minefactoryreloaded.util.Util;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.net.Packets;
 

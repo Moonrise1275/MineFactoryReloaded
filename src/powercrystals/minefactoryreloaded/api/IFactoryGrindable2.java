@@ -11,6 +11,7 @@ import net.minecraft.world.World;
  *
  * Defines a grindable entity for the Grinder.
  */
+@Deprecated
 @SuppressWarnings("deprecation")
 public interface IFactoryGrindable2 extends IFactoryGrindable
 {

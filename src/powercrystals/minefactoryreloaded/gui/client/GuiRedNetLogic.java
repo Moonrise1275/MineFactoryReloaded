@@ -12,14 +12,14 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import powercrystals.core.gui.Control;
-import powercrystals.core.gui.GuiScreenBase;
-import powercrystals.core.gui.controls.Button;
-import powercrystals.core.gui.controls.IListBoxElement;
-import powercrystals.core.gui.controls.ListBox;
-import powercrystals.core.gui.controls.SliderVertical;
-import powercrystals.core.net.PacketWrapper;
-import powercrystals.core.position.BlockPosition;
+import powercrystals.minefactoryreloaded.gui.Control;
+import powercrystals.minefactoryreloaded.gui.GuiScreenBase;
+import powercrystals.minefactoryreloaded.gui.control.Button;
+import powercrystals.minefactoryreloaded.gui.control.IListBoxElement;
+import powercrystals.minefactoryreloaded.gui.control.ListBox;
+import powercrystals.minefactoryreloaded.gui.control.SliderVertical;
+import powercrystals.minefactoryreloaded.net.PacketWrapper;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
 import powercrystals.minefactoryreloaded.MFRRegistry;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedClient;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;

@@ -3,7 +3,7 @@ package powercrystals.minefactoryreloaded.tile.machine;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import powercrystals.core.util.UtilInventory;
+import powercrystals.minefactoryreloaded.util.UtilInventory;
 import powercrystals.minefactoryreloaded.core.MFRUtil;
 import powercrystals.minefactoryreloaded.setup.Machine;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryInventory;

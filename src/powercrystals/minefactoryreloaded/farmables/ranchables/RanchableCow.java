@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import powercrystals.core.inventory.IInventoryManager;
-import powercrystals.core.inventory.InventoryManager;
+import powercrystals.minefactoryreloaded.util.IInventoryManager;
+import powercrystals.minefactoryreloaded.util.InventoryManager;
 import powercrystals.minefactoryreloaded.api.IFactoryRanchable;
 
 public class RanchableCow implements IFactoryRanchable

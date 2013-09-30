@@ -13,7 +13,7 @@ import org.bouncycastle.util.Arrays;
 
 import cpw.mods.fml.common.FMLLog;
 
-import powercrystals.core.position.BlockPosition;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
 import powercrystals.minefactoryreloaded.MineFactoryReloadedCore;
 import powercrystals.minefactoryreloaded.api.rednet.IConnectableRedNet;
 import powercrystals.minefactoryreloaded.setup.MFRConfig;

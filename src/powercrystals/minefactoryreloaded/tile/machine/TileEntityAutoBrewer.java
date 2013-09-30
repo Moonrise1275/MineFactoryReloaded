@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionHelper;
-import powercrystals.core.util.UtilInventory;
+import powercrystals.minefactoryreloaded.util.UtilInventory;
 import powercrystals.minefactoryreloaded.gui.client.GuiAutoBrewer;
 import powercrystals.minefactoryreloaded.gui.client.GuiFactoryInventory;
 import powercrystals.minefactoryreloaded.gui.container.ContainerAutoBrewer;

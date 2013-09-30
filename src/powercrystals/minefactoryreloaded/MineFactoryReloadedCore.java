@@ -1,10 +1,9 @@
 package powercrystals.minefactoryreloaded;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-//import buildcraft.api.transport.FacadeManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -28,8 +27,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
-import powercrystals.core.mod.BaseMod;
-import powercrystals.core.updater.UpdateManager;
 import powercrystals.minefactoryreloaded.block.BlockConveyor;
 import powercrystals.minefactoryreloaded.block.BlockDecorativeStone;
 import powercrystals.minefactoryreloaded.block.BlockFactoryDecorativeBricks;
@@ -135,12 +132,12 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = MineFactoryReloadedCore.modId, name = MineFactoryReloadedCore.modName, version = MineFactoryReloadedCore.version,
-dependencies = "required-after:PowerCrystalsCore@[1.2.0B1,);after:ic2")
+dependencies = "after:IC2;after:BuildCraft|Transport;after:BuildCraft|Energy")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
 clientPacketHandlerSpec = @SidedPacketHandler(channels = { MineFactoryReloadedCore.modNetworkChannel }, packetHandler = ClientPacketHandler.class),
 serverPacketHandlerSpec = @SidedPacketHandler(channels = { MineFactoryReloadedCore.modNetworkChannel }, packetHandler = ServerPacketHandler.class),
 connectionHandler = ConnectionHandler.class)
-public class MineFactoryReloadedCore extends BaseMod
+public class MineFactoryReloadedCore
 {
 	@SidedProxy(clientSide = "powercrystals.minefactoryreloaded.net.ClientProxy", serverSide = "powercrystals.minefactoryreloaded.net.CommonProxy")
 	public static IMFRProxy proxy;
@@ -292,13 +289,9 @@ public class MineFactoryReloadedCore extends BaseMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt)
 	{
-		setConfigFolderBase(evt.getModConfigurationDirectory());
-		
-		MFRConfig.loadCommonConfig(getCommonConfig());
-		MFRConfig.loadClientConfig(getClientConfig());
-		
-		extractLang(new String[] { "en_US", "es_AR", "es_ES", "es_MX", "es_UY", "es_VE", "zh_CN", "zh_TW", "ru_RU", "ko_KR", "de_DE" });
-		loadLang();
+		String configPath = evt.getModConfigurationDirectory().getAbsolutePath() + "/powercrystals/minefactoryreloaded/";
+		MFRConfig.loadCommonConfig(new File(configPath + "common.cfg"));
+		MFRConfig.loadClientConfig(new File(configPath + "client.cfg"));
 		
 		FluidRegistry.registerFluid(new Fluid("milk"));
 		FluidRegistry.registerFluid(new Fluid("sludge"));
@@ -535,8 +528,6 @@ public class MineFactoryReloadedCore extends BaseMod
 		VillagerRegistry.instance().registerVillageTradeHandler(MFRConfig.zoolologistEntityId.getInt(), new VillageTradeHandler());
 		
 		GameRegistry.registerWorldGenerator(new MineFactoryReloadedWorldGen());
-		
-		TickRegistry.registerScheduledTickHandler(new UpdateManager(this), Side.CLIENT);
 	}
 	
 	@EventHandler
@@ -652,23 +643,5 @@ public class MineFactoryReloadedCore extends BaseMod
 		else if(blockId == chocolateMilkLiquid.blockID) return new ItemStack(chocolateMilkBucketItem);
 		else if(blockId == mushroomSoupLiquid.blockID) return new ItemStack(mushroomSoupBucketItem);
 		else return null;
-	}
-	
-	@Override
-	public String getModId()
-	{
-		return modId;
-	}
-
-	@Override
-	public String getModName()
-	{
-		return modName;
-	}
-
-	@Override
-	public String getModVersion()
-	{
-		return version;
 	}
 }

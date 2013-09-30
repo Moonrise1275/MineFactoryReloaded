@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import powercrystals.core.position.BlockPosition;
-import powercrystals.core.util.UtilInventory;
+import powercrystals.minefactoryreloaded.util.BlockPosition;
+import powercrystals.minefactoryreloaded.util.UtilInventory;
 import powercrystals.minefactoryreloaded.tile.base.TileEntityFactory;
 
 public abstract class MFRLiquidMover
