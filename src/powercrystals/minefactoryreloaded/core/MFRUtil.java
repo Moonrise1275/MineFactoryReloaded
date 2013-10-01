@@ -13,6 +13,7 @@ import powercrystals.minefactoryreloaded.util.BlockPosition;
 import powercrystals.minefactoryreloaded.api.IToolHammer;
 import powercrystals.minefactoryreloaded.api.IToolHammerAdvanced;
 import powercrystals.minefactoryreloaded.tile.conveyor.TileEntityConveyor;
+import buildcraft.api.tools.IToolWrench;
 
 public class MFRUtil
 {
@@ -28,6 +29,10 @@ public class MFRUtil
 			return ((IToolHammerAdvanced)currentItem).isActive(player.inventory.getCurrentItem());
 		}
 		else if(currentItem instanceof IToolHammer)
+		{
+			return true;
+		}
+		else if(currentItem instanceof IToolWrench)
 		{
 			return true;
 		}
